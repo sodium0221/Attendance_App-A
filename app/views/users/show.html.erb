@@ -22,6 +22,14 @@
   </table>
 </div>
 
+<div class="btn-users-shows">
+  <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-sm btn-primary" %>
+  <%= link_to "CSV出力", '#', class: "btn btn-sm btn-primary" %>
+</div>
+<div class="btn-users-get">
+  <%= link_to "勤怠修正ログ(承認済)", '#', class: "btn btn-primary" %>
+</div>
+
 <div>
   <table class="table table-bordered table-condensed table-hover" id="table-attendances">
     <thead>
@@ -54,7 +62,7 @@
               <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
             <% end %>
           </td>
-          <td></td>
+          <td><%= day.note %></td>
         </tr>
       <% end %>
     </tbody>
