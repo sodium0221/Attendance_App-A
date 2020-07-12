@@ -58,6 +58,10 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
   
+  def attending_member
+    @users = User.all
+  end
+  
   private
   
     def user_params

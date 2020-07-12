@@ -27,6 +27,18 @@
   </table>
 </div>
 
+<div class="master-message">
+  <div>
+    <%= link_to "【所属朝承認申請のお知らせ】", '#' %>
+  </div>
+  <div>
+    <%= link_to "【勤怠変更申請のお知らせ】", '#' %>
+  </div>
+  <div>
+    <%= link_to "【残業申請のお知らせ】", '#' %>
+  </div>
+</div>  
+
 <div class="btn-users-shows">
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-sm btn-primary" %>
   <%= link_to "CSV出力", '#', class: "btn btn-sm btn-primary" %>
