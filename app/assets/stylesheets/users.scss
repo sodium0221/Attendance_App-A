@@ -63,11 +63,27 @@
 
 /* ユーザー一覧ページ */
 
+.import-button {
+  width: 260px;
+  margin-top: 10px;
+}
+
+.index-page {
+  button {
+    height: 60px;
+    width: 100px;
+  }
+  p {
+    padding-top: 15px;
+  }
+}
+
 #table-users {
   td {
     vertical-align: middle;
   }
 }
+
 
 /* 基本情報編集モーダルウインドウ */
 

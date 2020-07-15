@@ -9,7 +9,7 @@ class User < ApplicationRecord
   validates :email, presence: true, length: { maximum: 100 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
-  validates :department, length: { in: 2..30 }, allow_blank: true
+  validates :affiliation, length: { in: 2..30 }, allow_blank: true
   validates :basic_time, presence: true
   validates :work_time, presence: true
   has_secure_password
@@ -45,5 +45,19 @@ class User < ApplicationRecord
   # ユーザーのログイン情報を破棄します。
   def forget
     update_attribute(:remember_digest, nil)
+  end
+  
+  def self.import(file)
+    CSV.foreach(file.path, headers: true) do |row|
+      # IDが見つかれば、レコードを呼び出し、見つからなければ新しく作成
+      task = find_by(id: row["id"]) || new
+      # CSVからデータを取得し、設定する
+      task.attributes = row.to_hash.slice(*updatable_attributes)
+      task.save
+    end 
+  end 
+  
+  def self.updatable_attributes
+    ["title", "user_id"]
   end
 end
