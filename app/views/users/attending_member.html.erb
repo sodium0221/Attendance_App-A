@@ -1,14 +1,14 @@
 <h1>出勤中社員一覧</h1>
 
-<table class="table table-bordered table-condensed user-table">
+<table class="table table-bordered table-condensed attending-page">
     <tr>
       <th>在籍番号</th>
       <th>名前</th>
     </tr>
     <% @users.each do |user| %>
-    <tr>
-      <td><%= user.id %></td>
-      <td><%= user.name %></td>
-    </tr>
+            <tr>
+              <td><%= user.employee_number %></td>
+              <td><%= user.name %></td>
+            </tr>
     <% end %>
 </table>
