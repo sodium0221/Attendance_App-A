@@ -86,8 +86,12 @@
 
 /* 出勤中社員一覧ページ */
 
-.attending_page {
+#index-attendance {
   text-align: center;
+  th {
+    text-align: center;
+  }
+  
 }
 
 
