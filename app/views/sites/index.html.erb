@@ -1,0 +1,32 @@
+<h1>拠点一覧</h1>
+
+<div>
+  <table class="table table-bordered table-striped table-condensed" id="index_site">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th>拠点番号</th>
+        <th>拠点名</th>
+        <th>勤怠種類</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sites.each do |site| %>
+        <tr>
+          <td><%= link_to "修正", edit_site_info_site_path(site), remote: true, class: "btn btn-sm btn-primary" %></td>
+          <td><%= link_to "削除", site, method: :delete,
+                  data: { confirm: "削除してよろしいですか?" },
+                  class: "btn btn-sm btn-primary" %></td>
+          <td><%= site.site_number %></td>
+          <td><%= site.site_name %></td>
+          <td><%= site.site_status %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= link_to "拠点情報追加", new_site_path, class: "btn btn-primary" %>
+</div>
+
+<!-- モーダルウインドウ表示 -->
+<div id="edit-site-info" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

@@ -1,6 +1,9 @@
 <h1>出勤中社員一覧</h1>
 <div>
   <table class="table table-bordered text-center table-condensed table-striped" id="index-attendance">
+    <% if @users == [] %>
+      <p>現在出勤中の社員はいません</p>
+    <% else %>
     <thead>
       <tr>
         <th>在籍番号</th>
@@ -15,5 +18,6 @@
         </tr>
       </tbody>
       <% end %>
+    <% end %>
   </table>
 </div>
