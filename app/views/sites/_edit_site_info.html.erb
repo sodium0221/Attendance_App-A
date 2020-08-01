@@ -12,24 +12,7 @@
     <div class="modal-body">
       <div class="row">
         <div class="col-md-6 col-md-offset-3">
-          <%= form_with(model: @site, url: update_site_info_site_path(@site), local: true, method: :patch) do |f| %>
-            
-            <%= f.label :site_number, class: "label-#{yield(:class_text)}" %>
-            <%= f.text_field :site_number, class: "form-control" %>
-            
-            <%= f.label :site_name, class: "label-#{yield(:class_text)}" %>
-            <%= f.text_field :site_name, class: "form-control" %>
-            
-            <%= f.label :site_status, class: "label-#{yield(:class_text)}" %>
-            <%= f.text_field :site_status, class: "form-control" %>
-            
-            <div class="center">
-              <%= f.submit yield(:button_text), class: "btn btn-primary btn-#{yield(:class_text)}" %>
-              <button type="button" class="btn btn-default btn-<%= yield(:class_text) %>" data-dismiss="modal">
-                キャンセル
-              </button>
-            </div>
-          <% end %>
+          <%= render 'form_site' %>
         </div>
       </div>
     </div>

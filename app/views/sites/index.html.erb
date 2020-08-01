@@ -1,3 +1,5 @@
+<% provide(:class_text, "new-site") %>
+<% provide(:btn_text, "追加") %>
 <h1>拠点一覧</h1>
 
 <div>
@@ -25,7 +27,29 @@
       <% end %>
     </tbody>
   </table>
-  <%= link_to "拠点情報追加", new_site_path, class: "btn btn-primary" %>
+  <div class="panel panel-default site-index--new">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <button type="button" data-toggle="collapse" href="#collapse1" class="btn btn-primary">拠点情報追加</a>
+      </h4>
+    </div>
+    <div id="collapse1" class="panel-collapse collapse">
+      <div class="panel-body">
+        <%= form_with(model: Site.new, local: true) do |f| %>
+          <%= f.label :site_number, class: "label-#{yield(:calss_text)}" %>
+          <%= f.text_field :site_number, class: "form-control" %>
+          
+          <%= f.label :site_name, class: "label-#{yield(:class_text)}" %>
+          <%= f.text_field :site_name, class: "form-control" %>
+          
+          <%= f.label :site_status, class: "label-#{yield(:class_text)}" %>
+          <%= f.select :site_status, [ "出勤", "退勤" ], { prompt: "選択してください" }, class: "form-control" %>
+          
+          <%= f.submit yield(:btn_text), class: "btn btn-primary btn-block btn-#{yield(:class_text)}" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- モーダルウインドウ表示 -->

@@ -1,0 +1,18 @@
+<%= form_with(model: @site, local: true) do |f| %>
+  
+  <%= f.label :site_number, class: "label-#{yield(:class_text)}" %>
+  <%= f.text_field :site_number, class: "form-control" %>
+  
+  <%= f.label :site_name, class: "label-#{yield(:class_text)}" %>
+  <%= f.text_field :site_name, class: "form-control" %>
+  
+  <%= f.label :site_status, class: "label-#{yield(:class_text)}" %>
+  <%= f.select :site_status, {出勤: "出勤", 退勤: "退勤"}, { prompt: "選択して下さい"}, class: "form-control" %>
+  
+  <%= f.submit yield(:button_text), class: "btn btn-primary btn-#{yield(:class_text)}" %>
+  
+  <button type="button" class="btn btn-default btn-<%= yield(:class_text) %>" data-dismiss="modal">
+    キャンセル
+  </button>
+  
+<% end %>

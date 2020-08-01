@@ -13,13 +13,21 @@ class SitesController < ApplicationController
   
   def create
     @site = Site.new(site_params)
-    if @site.save
-      flash[:success] = "拠点情報が追加されました"
-      redirect_to @site
+      if @site.save
+        flash[:success] = "拠点情報を追加しました。"
+        redirect_to sites_url
+      else
+        render :index
+      end
+  end
+  
+  def update
+    if @site.update_attributes(site_params)
+      flash[:success] = "拠点情報を更新しました。"
     else
-      flash[:danger] = "拠点情報を追加できませんでした"
-      render sites_url
+      flash[:danger] = "更新は失敗しました。"
     end 
+      redirect_to sites_url
   end
   
   def destroy
@@ -32,6 +40,12 @@ class SitesController < ApplicationController
   end
   
   def update_site_info
+    if @site.update_attributes(site_params)
+      flash[:success] = "拠点情報を更新しました。"
+    else
+      flash[:danger] = "更新は失敗しました。"
+    end 
+      redirect_to sites_url
   end
   
   # beforeフィルター

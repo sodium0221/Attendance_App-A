@@ -5,6 +5,15 @@
 
 /* 拠点情報一覧ページ */
 
+.label-new-site {
+  margin-top: 5px;
+}
+
+.btn-new-site {
+  margin: 15px auto;
+  width: 30%;
+}
+
 
 /* 拠点情報編集モーダルウインドウ */
 
@@ -13,6 +22,6 @@
 }
 
 .btn-site-info {
-  margin: 15px 0;
+  margin: 15px auto;
   width: 30%;
 }

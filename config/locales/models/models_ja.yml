@@ -3,6 +3,7 @@ ja:
     models:
       user: ユーザー
       attendance: 勤怠
+      site: 拠点
     attributes:
         user:
           id: ID
