@@ -19,6 +19,10 @@
 
 /* ユーザー勤怠情報テーブル */
 
+.btn-att_app {
+  margin-top:10px;
+}
+
 #table-attendances {
   th {
     vertical-align: middle;
@@ -33,6 +37,7 @@
 .master-message {
   padding-top: 1px;
 }
+
 
 /* ユーザー情報下ボタン */
 .btn_users-shows {

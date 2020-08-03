@@ -11,6 +11,13 @@ Rails.application.routes.draw do
     post   '/login', to: 'sessions#create'
     delete '/logout', to: 'sessions#destroy'
     
+    # 上長画面1ヶ月分勤怠お知らせフォーム
+    get '/approval_alert', to: 'attendances#approval_alert'
+    post '/approval_alert', to: 'attendances#approval_alert'
+    
+    # 1ヶ月分の申請
+    patch '/approval_alert', to: 'attendances#approval_alert'
+    
     # ユーザー表示
     get '/attending_member', to: 'users#attending_member'
     
