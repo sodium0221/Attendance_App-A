@@ -82,7 +82,7 @@
     <tbody>
       <% @attendances.each do |day| %>
         <tr>
-          <td><%= link_to "残業申請", '#', class: "btn btn-primary" %></td>
+          <td><%= link_to "残業申請", edit_overtime_motion_user_attendance_path(day.user_id, day.id), remote: true, class: "btn btn-primary" %></td>
           <td><%= l(day.worked_on, format: :short) %></td>
           <td><%= $days_of_the_week[day.worked_on.wday] %></td>
           <td><%= l(day.started_at, format: :hour) if day.started_at.present? %></td>
@@ -137,3 +137,5 @@
 
 <!-- モーダルウインドウ表示 -->
 <div id="approval-alert" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+
+<div id="edit-overtime-motion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

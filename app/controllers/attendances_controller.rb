@@ -46,6 +46,11 @@ class AttendancesController < ApplicationController
   def approval_alert
   end
   
+  def edit_overtime_motion
+    @user = User.find(params[:user_id])
+    @attendance = @user.attendances.find(params[:id])
+  end
+  
   private
   # 1ヶ月分の勤怠情報を扱います。
   def attendances_params

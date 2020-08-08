@@ -1,0 +1,32 @@
+<% provide(:class_text, 'edit--overtime') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-body">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+        <table class="table table-bordered">
+          <h1>【残業申請】</h1>
+          <%= form_with(model: @user, local: true) do |f| %>
+            <tr>
+              <th>日付</th>
+              <th>曜日</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          <% end %>
+        </table>
+    </div>
+  </div>
+</div>
