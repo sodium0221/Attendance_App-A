@@ -51,6 +51,9 @@ class AttendancesController < ApplicationController
     @attendance = @user.attendances.find(params[:id])
   end
   
+  def update_overtime_motion
+  end
+  
   private
   # 1ヶ月分の勤怠情報を扱います。
   def attendances_params
