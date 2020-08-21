@@ -35,9 +35,8 @@
     <%= link_to "【勤怠変更申請のお知らせ】", '#' %>
   </div>
   <div>
-    <%= link_to "【残業申請のお知らせ】", '#' %>
-  </div>
-</div>  
+    <%= "【残業申請のお知らせ】" %>
+  </div>  
 
 <div class="btn-users-shows">
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-sm btn-primary" %>
@@ -84,7 +83,7 @@
         <tr>
           <td><%= link_to "残業申請", edit_overtime_motion_user_attendance_path(day.user_id, day.id), remote: true, class: "btn btn-primary" %></td>
           <td><%= l(day.worked_on, format: :short) %></td>
-          <td><%= $days_of_the_week[day.worked_on.wday] %></td>
+          <td class='<%= "wday#{day.worked_on.wday}"%>'><%= $days_of_the_week[day.worked_on.wday] %></td>
           <td><%= l(day.started_at, format: :hour) if day.started_at.present? %></td>
           <td><%= l(day.started_at, format: :min) if day.started_at.present? %></td>
           <td>
@@ -106,11 +105,11 @@
             <% end %>
           </td>
           <td></td>
+          <td><%= l(day.finish_overtime, format: :hour) if day.finish_overtime.present?  %></td>
+          <td><%= l(day.finish_overtime, format: :min) if day.finish_overtime.present? %></td>
           <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td><%= day.operation  %></td>
+          <td><%= day.superior_marking  %></td>
         </tr>
       <% end %>
     </tbody>
