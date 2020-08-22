@@ -23,6 +23,16 @@
   margin-top:10px;
 }
 
+.have_messages {
+  color: red;
+}
+
+.overtime_message {
+  border: solid 3px red;
+  color: red;
+  font-weight: bold;
+}
+
 #table-attendances {
   th {
     vertical-align: middle;

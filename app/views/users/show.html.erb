@@ -28,14 +28,17 @@
 </div>
 
 <div class="master-message">
-  <div>
+  <div class='<%= "#{apply_message}"%>'>
     <%= link_to "【所属長承認申請のお知らせ】", approval_alert_path, remote: true %>
   </div>
-  <div>
+  <div class='<%= "#{apply_message}"%>'>
     <%= link_to "【勤怠変更申請のお知らせ】", '#' %>
   </div>
-  <div>
+  <div class='<%= "#{apply_message}"%>'>
     <%= "【残業申請のお知らせ】" %>
+    <% if @notice.present? %>
+      <%= link_to "#{@notice_sum}件の通知があります", '#', class: "overtime_message" %>
+    <% end %>
   </div>  
 
 <div class="btn-users-shows">
@@ -64,7 +67,7 @@
         <th colspan="2">終了予定時間</th>
         <th rowspan="2">時間外時間</th>
         <th rowspan="2">業務処理内容</th>
-        <th rowspan="2">指示者確認㊞</th>
+        <th rowspan="2">指示者確��㊞</th>
       </tr>
       <tr>
         <th>時</th>

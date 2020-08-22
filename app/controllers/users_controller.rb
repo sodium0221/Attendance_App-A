@@ -11,6 +11,8 @@ class UsersController < ApplicationController
   
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
+    @notice = Attendance.where(superior_marking: current_user.name)
+    @notice_sum = @notice.count
   end 
   
   def new
