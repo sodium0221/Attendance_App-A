@@ -63,8 +63,30 @@ class AttendancesController < ApplicationController
     redirect_to @user
   end
   
+  def edit_overtime_motion
+    @attendance = Attendance.find(params[:id])
+    @user = User.find(@attendance.user_id)
+    @overtime_users = Attendance.where(superior_marking: current_user.name)
+  end 
+  
+  def update_overtime_motion
+    @attendance = Attendance.find(params[:id])
+    @user = User.find(@attendance.user_id)
+    if @attendance.update_attributes(overtime_params)
+      flash[:success] = "残業を申請しました。"
+    else
+      flash[:danger] = "残業の申請ができませんでした。"
+    end 
+    redirect_to @user
+  end
+  
+  def edit_overtime_message
+    @user = User.find(params[:id])
+    @overtime_users = Attendance.where(superior_marking: current_user).pluck(:user_id).uniq
+  end
+  
   private
-  # 1ヶ月分の勤怠情報を扱います。
+  # 1ヶ月分の勤怠情����を扱います。
   def attendances_params
     params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
   end

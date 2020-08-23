@@ -33,6 +33,15 @@
   font-weight: bold;
 }
 
+.overtime_message:hover,
+.overtime_message:link,
+.overtime_message:visited,
+.overtime_message:active {
+  color: red;
+  font-weight: bold;
+  text-decoration: none;
+}
+
 #table-attendances {
   th {
     vertical-align: middle;

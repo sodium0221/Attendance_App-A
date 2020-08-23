@@ -37,7 +37,7 @@
   <div class='<%= "#{apply_message}"%>'>
     <%= "【残業申請のお知らせ】" %>
     <% if @notice.present? %>
-      <%= link_to "#{@notice_sum}件の通知があります", '#', class: "overtime_message" %>
+      <%= link_to "#{@notice_sum}件の通知があります", attendances_edit_overtime_message_user_path(@user.id), remote: true, class: "overtime_message" %>
     <% end %>
   </div>  
 
@@ -141,3 +141,5 @@
 <div id="approval-alert" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 
 <div id="edit-overtime-motion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+
+<div id="edit-overtime-message" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
