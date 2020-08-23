@@ -137,3 +137,25 @@
   margin: 15px 0;
   width: 30%;
 }
+
+/* 残業申請の編集 */
+
+#edit-overtime-message-modal {
+  caption {
+    color: black;
+    font-size: 20px;
+    text-align: center;
+  }
+  tbody tr:nth-child(even) {
+    background: #eee;
+  }
+  th, td {
+    text-align: center;
+    word-break : break-all;
+  }
+}
+
+.modal-dialog-center-overtime {
+  padding-top: 10%;
+  width: 60%;
+}

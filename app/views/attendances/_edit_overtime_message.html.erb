@@ -1,37 +1,43 @@
 <% provide(:class_text, 'edit--overtime-message') %>
 
 <%= form_with(model: @user, url: attendances_update_overtime_message_user_path(@user), local: true, method: :patch) do |f| %>
-  <div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-dialog modal-dialog-center-overtime">
     <div class="modal-content">
       <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-          <table class="table table-bordered" id="edit-overtime-message-modal">
-                <h1>【<%= @overtime_users %>】</h1>
+        <% @users.each do |user| %>
+          <table class="table table-bordered table" id="edit-overtime-message-modal">
+            <tbody>
+              <caption>【<%= user.name %>からの残業申請】</caption>
+              <tr>
+                <th>日付</th>
+                <th>曜日</th>
+                <th>終了予定時間</th>
+                <th>指定勤務終了時間</th>
+                <th>時間外時間</th>
+                <th>業務処理内容</th>
+                <th>支持者確認</th>
+                <th>変更</th>
+                <th>勤怠を確認する</th>
+              </tr>
+              <% user.attendances.where(superior_marking: current_user.name).each do |day| %>
                 <tr>
-                  <th>日付</th>
-                  <th>曜日</th>
-                  <th>終了予定時間</th>
-                  <th>指定勤務終了時間</th>
-                  <th>時間外時間</th>
-                  <th>業務処理内容</th>
-                  <th>支持者確認</th>
-                  <th>変更</th>
-                  <th>勤怠を確認する</th>
+                  <td><%= l(day.worked_on, format: :short) %></td>
+                  <td class='<%= "wday#{day.worked_on.wday}"%>'><%= $days_of_the_week[day.worked_on.wday] %></td>
+                  <td><%= l(day.finish_overtime, format: :time) if day.finish_overtime.present? %></td>
+                  <td><%= l(day.designated_work_end_time, format: :time) if user.designated_work_end_time.present? %></td>
+                  <td></td>
+                  <td><%= day.operation %></td>
+                  <td></td>
+                  <td></td>
+                  <td><%= link_to "確認", user_path(user), class: "btn btn-sm btn-primary" %></td>
                 </tr>
-                <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
+              <% end %>
+            </tbody>
           </table>
+        <% end %>
       </div>
     </div>
   </div>

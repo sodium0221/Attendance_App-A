@@ -1,5 +1,5 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :update_one_month]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: :edit_one_month
@@ -81,8 +81,8 @@ class AttendancesController < ApplicationController
   end
   
   def edit_overtime_message
-    @user = User.find(params[:id])
-    @overtime_users = Attendance.where(superior_marking: current_user).pluck(:user_id).uniq
+    @days = Attendance.where(superior_marking: current_user.name).pluck(:user_id).uniq
+    @users = User.find(@days)
   end
   
   private
