@@ -29,7 +29,9 @@ ja:
           finish_overtime: 終了予定時間
           next_day: 翌日
           operation: 業務処理内容
-          superior_marking: 支持者確認㊞
+          superior_marking: 指示者確認㊞
+          request_status: 指示者確認㊞
+          chg: 変更
         site:
           site_number: 拠点番号
           site_name: 拠点名

@@ -17,9 +17,13 @@ module UsersHelper
     end 
   end
   
-  def format_time_delta(finish, overtime)
-    if finish.present? && overtime.present?
-      (((overtime - finish) / 60) / 60)
+  def format_time_delta(user, att, day)
+    if user.present? && att.present?
+      if day.next_day?
+        ((((att - user) / 60) / 60) - 24)
+      else
+        (((att - user) / 60) / 60)
+      end
     end
   end
 end
