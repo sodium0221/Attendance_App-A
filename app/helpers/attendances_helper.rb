@@ -18,4 +18,12 @@ module AttendancesHelper
   def working_times(start, finish)
     format("%.2f", (((finish - start) / 60) / 60.0))
   end
+  
+  #残業申請モーダルの翌日チェックボックス の有無
+  def next_day_check(day)
+    if day.next_day?
+      day.finish_overtime + 1.day
+    end 
+  end
+      
 end

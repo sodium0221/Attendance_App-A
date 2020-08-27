@@ -10,4 +10,16 @@ module UsersHelper
       return "have_messages"
     end
   end
+  
+  def format_time(time)
+    if time.present?
+      l(time, format: :time)
+    end 
+  end
+  
+  def format_time_delta(finish, overtime)
+    if finish.present? && overtime.present?
+      (((overtime - finish) / 60) / 60)
+    end
+  end
 end

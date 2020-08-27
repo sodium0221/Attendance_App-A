@@ -138,6 +138,20 @@
   width: 30%;
 }
 
+/* 残業申請のモーダル */
+
+#edit-overtime-motion-modal {
+  tbody {
+    th {
+      text-align: center;
+    }
+    td {
+      text-align: center;
+      vertical-align : middle;
+    }
+  }
+}
+
 /* 残業申請の編集 */
 
 #edit-overtime-message-modal {
@@ -158,4 +172,8 @@
 .modal-dialog-center-overtime {
   padding-top: 10%;
   width: 60%;
+}
+
+.message-btn {
+  text-align: center;
 }

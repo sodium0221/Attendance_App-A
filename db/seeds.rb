@@ -22,6 +22,8 @@ User.create!(name: "管理者",
                email: email,
                password: password,
                password_confirmation: password,
+               designated_work_start_time: "9:00",
+               designated_work_end_time: "18:00",
                superior: true)
 end
              
@@ -32,5 +34,7 @@ end
   User.create!(name: name,
                email: email,
                password: password,
-               password_confirmation: password)
+               password_confirmation: password,
+               designated_work_start_time: "9:00",
+               designated_work_end_time: "18:00",)
 end

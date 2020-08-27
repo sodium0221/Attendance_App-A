@@ -67,6 +67,7 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     @user = User.find(@attendance.user_id)
     @overtime_users = Attendance.where(superior_marking: current_user.name)
+    @superiors = User.where(superior: true)
   end 
   
   def update_overtime_motion
@@ -85,8 +86,11 @@ class AttendancesController < ApplicationController
     @users = User.find(@days)
   end
   
+  def update_overtime_message
+  end
+  
   private
-  # 1ヶ月分の勤怠情����を扱います。
+  # 1ヶ月分の勤怠情報を扱います。
   def attendances_params
     params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
   end

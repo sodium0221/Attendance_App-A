@@ -1,15 +1,15 @@
-<% provide(:class_text, 'edit--overtime') %>
+<% provide(:class_text, 'edit--overtime-motion') %>
 
-
-  <div class="modal-dialog modal-lg modal-dialog-center">
+<%= form_with(model: @attendance, url: update_overtime_motion_user_attendance_path(@user, @attendance), local: true, method: :patch) do |f| %>
+  <div class="modal-dialog modal-dialog-center-overtime">
     <div class="modal-content">
       <div class="modal-body">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <%= form_with(model: @attendance, url: update_overtime_motion_user_attendance_path(@user), local: true, method: :patch) do |f| %>
-          <table class="table table-bordered" id="edit-overtime-modal">
-            <h1>【残業申請】</h1>
+          <table class="table table-bordered table" id="edit-overtime-motion-modal">
+            <tbody>
+              <h1>【残業申請】</h1>
               <tr>
                 <th>日付</th>
                 <th>曜日</th>
@@ -18,17 +18,20 @@
                 <th><%= f.label :operation, class: "label-#{yield(:class_text)}" %></th>
                 <th><%= f.label :superior_marking, class: "label-#{yield(:class_text)}" %></th>
               </tr>
-              <tr>
-                <td><%= l(@attendance.worked_on, format: :short) %></td>
-                <td class='<%= "wday#{@attendance.worked_on.wday}"%>'><%= $days_of_the_week[@attendance.worked_on.wday] %></td>
-                <td><%= f.time_field :finish_overtime, include_blank: true, ignore_data: true, class: "form-control" %></td>
-                <td><%= f.check_box :next_day ,{}, "true","false" %></td>
-                <td><%= f.text_field :operation, class: "form-control" %></td>
-                <td><%= f.select :superior_marking, ['上長1', '上長2'], { include_blank: true }, class: "form-control" %></td>
-              </tr>
+                <tr>
+                  <td><%= l(@attendance.worked_on, format: :short) %></td>
+                  <td class='<%= "wday#{@attendance.worked_on.wday}"%>'><%= $days_of_the_week[@attendance.worked_on.wday] %></td>
+                  <td>
+                      <%= f.time_field :finish_overtime, class: "form-control" %>
+                  </td>
+                  <td><%= f.check_box :next_day, { :checked => false}, @attendance.finish_overtime + 1.day, class: "form-control" %></td>
+                  <td><%= f.text_field :operation, class: "form-control" %></td>
+                  <td><%= f.collection_select :superior_marking, @superiors, :name, :name, {prompt: "選択して下さい"}, class: "form-control" %></td>
+                </tr>
+            </tbody>
           </table>
-          <%= f.submit "変更を送信する", class: "btn btn-primary btn-block btn-#{yield(:class_text)}" %>
-        <% end %>
+        <%= f.submit "変更を送信する", class: "btn btn-primary btn-block" %>
       </div>
     </div>
   </div>
+<% end %>

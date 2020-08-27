@@ -9,8 +9,8 @@
         <%= link_to "→︎", user_path(date: @first_day.next_month), class: "btn btn-primary" %>
       </td>
       <td>
-        指定勤務開始時間：<%= format_basic_info(@user.work_time) %><br>
-        指定勤務終了時間：<%= format_basic_info(@user.work_time) %> 
+        指定勤務開始時間　<%= format_time(@user.designated_work_start_time) %><br>
+        指定勤務終了時間　<%= format_time(@user.designated_work_end_time) %> 
       </td>
       <td colspan="3">基本時間：<%= format_basic_info(@user.basic_time) %></td>
       <td>月初日：<%= l(@first_day, format: :short) %></td>
@@ -27,27 +27,30 @@
   </table>
 </div>
 
-<div class="master-message">
-  <div class='<%= "#{apply_message}"%>'>
-    <%= link_to "【所属長承認申請のお知らせ】", approval_alert_path, remote: true %>
+<% if @user.superior %>
+  <div class="master-message">
+    <div class='<%= "#{apply_message}"%>'>
+      <%= link_to "【所属長承認申請のお知らせ】", approval_alert_path, remote: true %>
+    </div>
+    <div class='<%= "#{apply_message}"%>'>
+      <%= link_to "【勤怠変更申請のお知らせ】", '#' %>
+    </div>
+    <div class='<%= "#{apply_message}"%>'>
+      <%= "【残業申請のお知らせ】" %>
+      <% if @notice.present? %>
+        <%= link_to "#{@notice_sum}件の通知があります", attendances_edit_overtime_message_user_path(@user.id), remote: true, class: "overtime_message" %>
+      <% end %>
+    </div>  
+  
+    <div class="btn-users-shows">
+      <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-sm btn-primary" %>
+      <%= link_to "CSV出力", '#', class: "btn btn-sm btn-primary" %>
+    </div>
+    <div class="btn-users-get">
+      <%= link_to "勤怠修正ログ(承認済)", '#', class: "btn btn-primary" %>
+    </div>
   </div>
-  <div class='<%= "#{apply_message}"%>'>
-    <%= link_to "【勤怠変更申請のお知らせ】", '#' %>
-  </div>
-  <div class='<%= "#{apply_message}"%>'>
-    <%= "【残業申請のお知らせ】" %>
-    <% if @notice.present? %>
-      <%= link_to "#{@notice_sum}件の通知があります", attendances_edit_overtime_message_user_path(@user.id), remote: true, class: "overtime_message" %>
-    <% end %>
-  </div>  
-
-<div class="btn-users-shows">
-  <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-sm btn-primary" %>
-  <%= link_to "CSV出力", '#', class: "btn btn-sm btn-primary" %>
-</div>
-<div class="btn-users-get">
-  <%= link_to "勤怠修正ログ(承認済)", '#', class: "btn btn-primary" %>
-</div>
+<% end %>
 
 <div>
   <table class="table table-bordered table-condensed table-hover" id="table-attendances">
@@ -67,7 +70,7 @@
         <th colspan="2">終了予定時間</th>
         <th rowspan="2">時間外時間</th>
         <th rowspan="2">業務処理内容</th>
-        <th rowspan="2">指示者確��㊞</th>
+        <th rowspan="2">指示者確認㊞</th>
       </tr>
       <tr>
         <th>時</th>
