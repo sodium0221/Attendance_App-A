@@ -24,7 +24,7 @@
                   <td>
                       <%= f.time_field :finish_overtime, class: "form-control" %>
                   </td>
-                  <td><%= f.check_box :next_day, { :checked => false}, @attendance.finish_overtime + 1.day, class: "form-control" %></td>
+                  <td><%= f.check_box :next_day %></td>
                   <td><%= f.text_field :operation, class: "form-control" %></td>
                   <td><%= f.collection_select :superior_marking, @superiors, :name, :name, {prompt: "選択して下さい"}, class: "form-control" %></td>
                 </tr>

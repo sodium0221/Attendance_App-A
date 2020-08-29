@@ -1,6 +1,6 @@
 <% provide(:class_text, 'edit--overtime-message') %>
 
-<%= form_with(model: @attendance, url: attendances_update_overtime_message_user_path(@user), local: true, method: :patch) do |f| %>
+<%= form_with(model: @users, url: attendances_update_overtime_message_user_path(@user), local: true, method: :patch) do |f| %>
   <div class="modal-dialog modal-dialog-center-overtime">
     <div class="modal-content">
       <div class="modal-body">
@@ -8,7 +8,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
         <% @users.each do |user| %>
-          <table class="table table-bordered table" id="edit-overtime-message-modal">
+          <table class="table table-bordered table-condensed" id="edit-overtime-message-modal">
             <tbody>
               <caption>【<%= user.name %>からの残業申請】</caption>
               <tr>
@@ -31,7 +31,7 @@
                   <td><%= format_time_delta(user.designated_work_end_time, day.finish_overtime, day) %></td>
                   <td><%= day.operation %></td>
                   <td><%= f.select :request_status, [["なし", 0], ["申請中", 1], ["承認", 2], ["否認", 3]], { selected: 1 }, class: "form-control" %></td>
-                  <td></td>
+                  <td><%= f.check_box :chg, { :checked => false }, class: "form-control" %></td>
                   <td><%= link_to "確認", user_path(user), class: "btn btn-sm btn-primary" %></td>
                 </tr>
               <% end %>

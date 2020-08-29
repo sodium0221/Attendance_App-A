@@ -45,23 +45,7 @@ class AttendancesController < ApplicationController
   
   def approval_alert
   end
-  
-  def edit_overtime_motion
-    @user = User.find(params[:user_id])
-    @attendance = @user.attendances.find(params[:id])
-  end
-  
-  def update_overtime_motion
-    @user = User.find(params[:user_id])
-    @attendance = Attendance.find(params[:id])
-    
-    if @attendance.update_attributes(overtime_params)
-      flash[:success] = "残業申請を送信しました。"
-    else
-      flash[:danger] = "残業申請を送信できませんでした。"
-    end 
-    redirect_to @user
-  end
+
   
   def edit_overtime_motion
     @attendance = Attendance.find(params[:id])
@@ -76,12 +60,13 @@ class AttendancesController < ApplicationController
     if @attendance.update_attributes(overtime_params)
       flash[:success] = "残業を申請しました。"
     else
-      flash[:danger] = "残業の申請ができませんでした。"
+      flash[:danger] = "残業の申請ができませんでした。<br>" + @attendance.errors.full_messages.join("<br>")
     end 
     redirect_to @user
   end
   
   def edit_overtime_message
+    @user = User.find(params[:id])
     @days = Attendance.where(superior_marking: current_user.name).pluck(:user_id).uniq
     @users = User.find(@days)
   end
@@ -97,6 +82,10 @@ class AttendancesController < ApplicationController
   
   def overtime_params
     params.require(:attendance).permit(:finish_overtime, :next_day, :operation, :superior_marking)
+  end
+  
+  def edit_overtime_params
+    params.require(:attendance).permit(:request_status, :chg)
   end
   
   def admin_or_correct_user

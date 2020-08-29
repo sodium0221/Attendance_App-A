@@ -25,5 +25,4 @@ module AttendancesHelper
       day.finish_overtime + 1.day
     end 
   end
-      
 end
