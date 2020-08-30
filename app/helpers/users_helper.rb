@@ -17,13 +17,15 @@ module UsersHelper
     end 
   end
   
+  # 時間外時間算出
   def format_time_delta(user, att, day)
     if user.present? && att.present?
       if day.next_day == 1
-        format("%.2f", ((((att - user) / 60) / 60) - 24))
+        format("%.2f", (((att + 1.day - user) / 60) / 60))
       else
         format("%.2f", (((att - user) / 60) / 60))
       end
     end
   end
+
 end

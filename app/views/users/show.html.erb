@@ -115,7 +115,7 @@
           <td><%= l(day.finish_overtime, format: :min) if day.finish_overtime.present? %></td>
           <td></td>
           <td><%= day.operation  %></td>
-          <td><%= day.superior_marking  %></td>
+          <td><%= superior_mark_overtime(day) %></td>
         </tr>
       <% end %>
     </tbody>

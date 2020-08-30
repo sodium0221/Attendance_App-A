@@ -25,4 +25,15 @@ module AttendancesHelper
       day.finish_overtime + 1.day
     end 
   end
+  
+  # 指示者確認表示
+  def superior_mark_overtime(user)
+    if user.request_status == 1
+      "残業申請中"
+    elsif user.request_status == 2
+      "残業承認済"
+    elsif user.request_status == 3
+      "残業否認"
+    end 
+  end
 end

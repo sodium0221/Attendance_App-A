@@ -1,5 +1,7 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message]
+  include AttendancesHelper
+  
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: :edit_one_month
@@ -59,6 +61,7 @@ class AttendancesController < ApplicationController
     @user = User.find(@attendance.user_id)
     if @attendance.update_attributes(overtime_params)
       flash[:success] = "残業を申請しました。"
+      @attendance.update_attributes(request_status: 1)
     else
       flash[:danger] = "残業の申請ができませんでした。<br>" + @attendance.errors.full_messages.join("<br>")
     end 
@@ -72,6 +75,19 @@ class AttendancesController < ApplicationController
   end
   
   def update_overtime_message
+    @user = User.find(params[:id])
+    edit_overtime_message_params.each do |id, item|
+      attendance = Attendance.find(id)
+        if attendance.update_attributes(item)
+          if attendance.chg == 1
+            flash[:success] = "残業申請の変更を送信しました。"
+            attendance.update_attributes(superior_marking: 0)
+          else
+            flash[:danger] = "「変更」にチェックを入れて下さい。"
+          end
+        end 
+      end
+    redirect_to @user
   end
   
   private
@@ -81,11 +97,15 @@ class AttendancesController < ApplicationController
   end
   
   def overtime_params
-    params.require(:attendance).permit(:finish_overtime, :next_day, :operation, :superior_marking)
+    params.require(:attendance).permit(:finish_overtime, :next_day, :operation, :superior_marking, :request_status)
   end
   
   def edit_overtime_params
     params.require(:attendance).permit(:request_status, :chg)
+  end
+  
+  def edit_overtime_message_params
+    params.require(:user).permit(attendances: [:request_status, :chg])[:attendances]
   end
   
   def admin_or_correct_user
