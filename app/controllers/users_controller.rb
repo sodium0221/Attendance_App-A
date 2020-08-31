@@ -13,6 +13,7 @@ class UsersController < ApplicationController
     @worked_sum = @attendances.where.not(started_at: nil).count
     @notice = Attendance.where(superior_marking: current_user.name)
     @notice_sum = @notice.count
+    @alert = nil
   end 
   
   def new

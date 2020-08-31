@@ -28,27 +28,33 @@
 </div>
 
 <% if @user.superior %>
-  <div class="master-message">
-    <div class='<%= "#{apply_message}"%>'>
-      <%= link_to "【所属長承認申請のお知らせ】", approval_alert_path, remote: true %>
-    </div>
-    <div class='<%= "#{apply_message}"%>'>
-      <%= link_to "【勤怠変更申請のお知らせ】", '#' %>
-    </div>
-    <div class='<%= "#{apply_message}"%>'>
-      <%= "【残業申請のお知らせ】" %>
-      <% if @notice.present? %>
-        <%= link_to "#{@notice_sum}件の通知があります", attendances_edit_overtime_message_user_path(@user.id), remote: true, class: "overtime_message" %>
-      <% end %>
-    </div>  
+  <div>
+    <%= link_to_if @alert.present?, "【所属長承認申請のお知らせ】", '#', remote: true, class: "message_alert" %>
+    <% if @alert.present? %>
+      <font class="<%= "#{apply_message}"%>"><%= "#{@notice_sum}件の通知があります" %></font>
+    <% end %>
+  </div> 
   
-    <div class="btn-users-shows">
-      <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-sm btn-primary" %>
-      <%= link_to "CSV出力", '#', class: "btn btn-sm btn-primary" %>
-    </div>
-    <div class="btn-users-get">
-      <%= link_to "勤怠修正ログ(承認済)", '#', class: "btn btn-primary" %>
-    </div>
+  <div>
+    <%= link_to_if @alert.present?, "【勤怠変更申請のお知らせ】", '#', remote: true, class: "message_alert" %>
+    <% if @alert.present? %>
+      <font class="<%= "#{apply_message}"%>"><%= "#{@notice_sum}件の通知があります" %></font>
+    <% end %>
+  </div> 
+  
+  <div>
+    <%= link_to_if @notice.present?, "【残業申請のお知らせ】", attendances_edit_overtime_message_user_path(@user.id), remote: true, class: "message_alert" %>
+    <% if @notice.present? %>
+      <font class="<%= "#{apply_message}"%>"><%= "#{@notice_sum}件の通知があります" %></font>
+    <% end %>
+  </div> 
+
+  <div class="btn-users-shows">
+    <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-sm btn-primary" %>
+    <%= link_to "CSV出力", '#', class: "btn btn-sm btn-primary" %>
+  </div>
+  <div class="btn-users-get">
+    <%= link_to "勤怠修正ログ(承認済)", '#', class: "btn btn-primary" %>
   </div>
 <% end %>
 

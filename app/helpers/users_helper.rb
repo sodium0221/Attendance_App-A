@@ -10,7 +10,7 @@ module UsersHelper
       return "have_messages"
     end
   end
-  
+
   def format_time(time)
     if time.present?
       l(time, format: :time)

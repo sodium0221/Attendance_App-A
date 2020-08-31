@@ -1,10 +1,10 @@
 class AttendancesController < ApplicationController
   include AttendancesHelper
   
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :confirm_one_month]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :set_one_month, only: :edit_one_month
+  before_action :set_one_month, only: [:edit_one_month, :confirm_one_month]
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
   
@@ -53,7 +53,7 @@ class AttendancesController < ApplicationController
     @attendance = Attendance.find(params[:id])
     @user = User.find(@attendance.user_id)
     @overtime_users = Attendance.where(superior_marking: current_user.name)
-    @superiors = User.where(superior: true)
+    @superiors = User.where(superior: true).where.not(name: current_user.name)
   end 
   
   def update_overtime_motion
@@ -88,6 +88,10 @@ class AttendancesController < ApplicationController
         end 
       end
     redirect_to @user
+  end
+  
+  def confirm_one_month
+    @worked_sum = @attendances.where.not(started_at: nil).count
   end
   
   private

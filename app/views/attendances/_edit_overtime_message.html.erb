@@ -33,7 +33,7 @@
                     <td><%= day.operation %></td>
                     <td><%= att.select :request_status, [["なし", 0], ["申請中", 1], ["承認", 2], ["否認", 3]], { selected: day.request_status }, class: "form-control" %></td>
                     <td><%= att.check_box :chg %></td>
-                    <td><%= link_to "確認", user_path(user), class: "btn btn-sm btn-primary" %></td>
+                    <td><%= link_to "確認", attendances_confirm_one_month_user_path(date: @first_day), class: "btn btn-sm btn-primary" %></td>
                   </tr>
                 <% end %>
               <% end %>

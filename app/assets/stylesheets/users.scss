@@ -23,23 +23,23 @@
   margin-top:10px;
 }
 
-.have_messages {
+.message_alert {
   color: red;
+  padding: 0 .3em;
+  transition: all .3s;
 }
 
-.overtime_message {
-  border: solid 3px red;
-  color: red;
-  font-weight: bold;
-}
-
-.overtime_message:hover,
-.overtime_message:link,
-.overtime_message:visited,
-.overtime_message:active {
-  color: red;
-  font-weight: bold;
+.message_alert:hover {
+  color: #FFF;
+  background-color: #F00;
   text-decoration: none;
+}
+
+.have_messages {
+  border: solid 3px #F00;
+  color: #F00;
+  font-weight: bold;
+  
 }
 
 #table-attendances {
@@ -55,6 +55,10 @@
 
 .master-message {
   padding-top: 1px;
+}
+
+.table-head-width {
+  width: 8%;
 }
 
 .wday0 {
