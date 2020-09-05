@@ -19,6 +19,31 @@ module AttendancesHelper
     format("%.2f", (((finish - start) / 60) / 60.0))
   end
   
+  # 時間外時間算出
+  def format_time_delta(end_time, overtime, day)
+    if end_time.present? && overtime.present?
+      if day.next_day == 1
+        format("%.2f", (((overtime + 1.day - end_time) / 60) / 60))
+      else
+        format("%.2f", (((overtime - end_time) / 60) / 60))
+      end
+    end
+  end
+  
+  # 指定勤務終了時間の調整
+  def adjustment_out_of_time(att, user)
+    att.end_time = user.designated_work_end_time.change(month: att.worked_on.month, day: att.worked_on.day)
+    if att.finish_overtime.present?
+      if att.next_day == 1
+        format("%.2f", (((att.finish_overtime + 1.day - att.end_time) / 60) / 60))
+      else
+        format("%.2f", (((att.finish_overtime - att.end_time) / 60) / 60))
+      end
+    end
+  end
+ 
+    
+  
   #残業申請モーダルの翌日チェックボックス の有無
   def next_day_check(day)
     if day.next_day?

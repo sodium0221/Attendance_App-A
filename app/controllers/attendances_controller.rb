@@ -29,6 +29,7 @@ class AttendancesController < ApplicationController
   end
   
   def edit_one_month
+    @superiors = User.where(superior: true).where.not(name: current_user.name)
   end
   
   def update_one_month
