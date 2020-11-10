@@ -11,13 +11,18 @@ class UsersController < ApplicationController
   
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
+    @attendance = @user.attendances.where(worked_on: @first_day..@last_day)
     @notice = Attendance.where(superior_marking: current_user.name)
     @notice_sum = @notice.count
+    @superiors = User.where(superior: true).where.not(name: current_user.name)
+    @notice_superior = Attendance.where(superior_marking: current_user.name)
+    @notice_superior_sum = @notice_superior.count
     @alert = nil
   end 
   
   def new
     @user = User.new
+    @attendances = User.first.attendances.pluck(:worked_on)
   end
   
   def create

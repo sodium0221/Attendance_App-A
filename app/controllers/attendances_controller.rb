@@ -4,7 +4,7 @@ class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :confirm_one_month]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :set_one_month, only: [:edit_one_month, :confirm_one_month]
+  before_action :set_one_month, only: [:edit_one_month, :confirm_one_month, :edit_deano_motion, :update_deano_motion]
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
   
@@ -60,12 +60,9 @@ class AttendancesController < ApplicationController
   def update_overtime_motion
     @attendance = Attendance.find(params[:id])
     @user = User.find(@attendance.user_id)
-    if @attendance.update_attributes(overtime_params)
+    @attendance.update_attributes(overtime_params)
       flash[:success] = "残業を申請しました。"
       @attendance.update_attributes(request_status: 1)
-    else
-      flash[:danger] = "残業の申請ができませんでした。<br>" + @attendance.errors.full_messages.join("<br>")
-    end 
     redirect_to @user
   end
   
@@ -95,6 +92,29 @@ class AttendancesController < ApplicationController
     @worked_sum = @attendances.where.not(started_at: nil).count
   end
   
+  def edit_deano_motion
+    @user = User.find(params[:id])
+    @user_id = Attendance.where(superior_marking: current_user.name).pluck(:user_id).uniq
+    @users = User.find(@user_id)
+    @attendance = @user.attendances.where(worked_on: @first_day..@last_day)
+    @superiors = User.where(superior: true).where.not(name: current_user.name)
+  end
+  
+  def update_deano_motion
+    @user = User.find(params[:id])
+    @attendances.each do |att|
+      att.update_attributes(deano_motion_params)
+    end
+    @attendances.update_all(superior_status1: 1)
+    redirect_to @user
+  end
+  
+  def edit_deano_message
+  end 
+  
+  def update_deano_message
+  end
+  
   private
   # 1ヶ月分の勤怠情報を扱います。
   def attendances_params
@@ -111,6 +131,10 @@ class AttendancesController < ApplicationController
   
   def edit_overtime_message_params
     params.require(:user).permit(attendances: [:request_status, :chg])[:attendances]
+  end
+  
+  def deano_motion_params
+    params.require(:attendance).permit([0], :superior_mark1)
   end
   
   def admin_or_correct_user

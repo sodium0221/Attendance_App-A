@@ -29,9 +29,9 @@
 
 <% if @user.superior %>
   <div>
-    <%= link_to_if @alert.present?, "【所属長承認申請のお知らせ】", '#', remote: true, class: "message_alert" %>
+    <%= link_to_if @notice_superior.present?, "【所属長承認申請のお知らせ】", '#', remote: true, class: "message_alert" %>
     <% if @alert.present? %>
-      <font class="<%= "#{apply_message}"%>"><%= "#{@notice_sum}件の通知があります" %></font>
+      <font class="<%= "#{apply_message}"%>"><%= "#{@notice_superior_sum}件の通知があります" %></font>
     <% end %>
   </div> 
   
@@ -43,7 +43,7 @@
   </div> 
   
   <div>
-    <%= link_to_if @notice.present?, "【残業申請のお知らせ】", attendances_edit_overtime_message_user_path(@user.id), remote: true, class: "message_alert" %>
+    <%= link_to_if @notice.present?, "【残業申請のお知らせ】", attendances_edit_overtime_message_user_path(@user), remote: true, class: "message_alert" %>
     <% if @notice.present? %>
       <font class="<%= "#{apply_message}"%>"><%= "#{@notice_sum}件の通知があります" %></font>
     <% end %>
@@ -120,7 +120,7 @@
           <td><%= l(day.finish_overtime, format: :hour) if day.finish_overtime.present?  %></td>
           <td><%= l(day.finish_overtime, format: :min) if day.finish_overtime.present? %></td>
           <td><%= adjustment_out_of_time(day, @user) %></td>
-          <td><%= day.operation  %></td>
+          <td><%= day.operation %></td>
           <td><%= superior_mark_overtime(day) %></td>
         </tr>
       <% end %>
@@ -135,8 +135,8 @@
         <td colspan="5"></td>
         <td>
           <h6>所属長承認</h6>
-          <%= form_with(model: @user, local: true) do |f| %>
-            <%= f.select :name, ['上長1', '上長2', '上長3'], { include_blank: true }, class: "form-control" %>
+          <%= form_with(model:@attendance, url: attendances_update_deano_motion_user_path(@user), local: true, method: :patch) do |f| %>
+            <%= f.collection_select :superior_mark1, @superiors, :name, :name, { prompt: "選択してください" }, class: "form-control" %>
             <%= f.submit "申請", class: "btn btn-primary btn-block btn-att_app" %>
           <% end %>
         </td>
@@ -152,3 +152,5 @@
 <div id="edit-overtime-motion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 
 <div id="edit-overtime-message" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+
+<div id="edit-deano-motion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

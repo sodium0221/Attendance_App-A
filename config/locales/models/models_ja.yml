@@ -26,6 +26,7 @@ ja:
           finished_at: 退勤時間
           note: 備考
           user_id: ユーザーID
+          user: ユーザーID
           finish_overtime: 終了予定時間
           next_day: 翌日
           operation: 業務処理内容

@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <% @attendances.each do |day| %>
+     <p><%= l(day.worked_on, format: :short) %> = <%= day.superior_status1 %> = <%= day.superior_mark1 %></p>
+    <% end %>
+    <%= form_with(model: @attendance, url: attendances_update_deano_motion_user_path(@user), local: true, method: :patch) do |f| %>
+      <%= f.label :superior_mark1, class: "label-edit-deano-motion" %>
+      <%= f.text_field :superior_mark1, class: "form-control" %>
+      <%= f.submit "送信", class: "btn btn-success" %>
+    <% end %>
+  </div>
+</div>

@@ -52,12 +52,12 @@ module AttendancesHelper
   end
   
   # 指示者確認表示
-  def superior_mark_overtime(user)
-    if user.request_status == 1
-      "残業申請中"
-    elsif user.request_status == 2
+  def superior_mark_overtime(day)
+    if day.request_status == "申請中"
+      day.superior_marking + "へ残業申請中"
+    elsif day.request_status == "承認"
       "残業承認済"
-    elsif user.request_status == 3
+    elsif day.request_status == "否認"
       "残業否認"
     end 
   end

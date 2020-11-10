@@ -31,6 +31,10 @@ Rails.application.routes.draw do
         get 'attendances/edit_overtime_message'
         patch 'attendances/update_overtime_message'
         get 'attendances/confirm_one_month'
+        get 'attendances/edit_deano_motion'
+        patch 'attendances/update_deano_motion'
+        get 'attendances/edit_deano_message'
+        patch 'attendances/update_deano_message'
       end 
       resources :attendances, only: :update do
         member do
