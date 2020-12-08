@@ -12,6 +12,8 @@ User.create!(name: "管理者",
              email: "sample@email.com",
              password: "password",
              password_confirmation: "password",
+             designated_work_start_time: "9:00",
+             designated_work_end_time: "18:00",
              admin: true)
              
 2.times do |n|

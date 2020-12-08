@@ -15,6 +15,8 @@ class User < ApplicationRecord
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
   
+  validates_associated :attendances
+  
   # 渡された文字列のハッシュ値を返します。
   def User.digest(string)
   cost = 
@@ -60,4 +62,5 @@ class User < ApplicationRecord
   def self.updatable_attributes
     ["title", "user_id"]
   end
+
 end

@@ -35,9 +35,9 @@ module AttendancesHelper
     att.end_time = user.designated_work_end_time.change(month: att.worked_on.month, day: att.worked_on.day)
     if att.finish_overtime.present?
       if att.next_day == 1
-        format("%.2f", (((att.finish_overtime + 1.day - att.end_time) / 60) / 60))
+        format("%.2f", (((att.finish_overtime.change(month: att.worked_on.month, day: att.worked_on.day) + 1.day - att.end_time) / 60) / 60))
       else
-        format("%.2f", (((att.finish_overtime - att.end_time) / 60) / 60))
+        format("%.2f", (((att.finish_overtime.change(month: att.worked_on.month, day: att.worked_on.day) - att.end_time) / 60) / 60))
       end
     end
   end

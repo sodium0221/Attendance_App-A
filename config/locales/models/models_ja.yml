@@ -33,6 +33,7 @@ ja:
           superior_marking: 指示者確認㊞
           request_status: 指示者確認㊞
           chg: 変更
+          out_of_time: 時間外時間
         site:
           site_number: 拠点番号
           site_name: 拠点名

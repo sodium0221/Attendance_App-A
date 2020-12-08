@@ -22,7 +22,7 @@
                   <td><%= l(@attendance.worked_on, format: :short) %></td>
                   <td class='<%= "wday#{@attendance.worked_on.wday}"%>'><%= $days_of_the_week[@attendance.worked_on.wday] %></td>
                   <td class="form-inline">
-                    <%= f.time_select :finish_overtime, { default: @attendance.worked_on, include_blanck: true }, class: "form-control" %>
+                    <%= f.time_field :finish_overtime, class: "form-control" %>
                   </td>
                   <td><%= f.check_box :next_day %></td>
                   <td><%= f.text_field :operation, class: "form-control" %></td>

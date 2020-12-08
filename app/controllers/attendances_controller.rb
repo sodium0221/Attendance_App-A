@@ -1,10 +1,11 @@
 class AttendancesController < ApplicationController
   include AttendancesHelper
   
+  before_action :set_user2, only: [:update_overtime_motion]
   before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :confirm_one_month]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :set_one_month, only: [:edit_one_month, :confirm_one_month, :edit_deano_motion, :update_deano_motion]
+  before_action :set_one_month, only: [:edit_one_month, :confirm_one_month, :update_overtime_motion, :edit_deano_motion, :update_deano_motion]
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
   
@@ -58,11 +59,17 @@ class AttendancesController < ApplicationController
   end 
   
   def update_overtime_motion
-    @attendance = Attendance.find(params[:id])
-    @user = User.find(@attendance.user_id)
-    @attendance.update_attributes(overtime_params)
-      flash[:success] = "残業を申請しました。"
-      @attendance.update_attributes(request_status: 1)
+    
+    @superiors = User.where(superior: true).where.not(name: current_user.name)
+    ActiveRecord::Base.transaction do
+      @attendance.update(overtime_params)
+      @attendance.save!(context: :overtime_vali)
+    end
+    @attendance.update_attributes(request_status: 1)
+    flash[:success] = "#{l(@attendance.worked_on, format: :short)}の残業を申請しました"
+    redirect_to @user
+  rescue ActiveRecord::RecordInvalid
+    flash[:danger] = "#{l(@attendance.worked_on, format: :short)}の残業を申請できませんでした<br>" + @attendance.errors.full_messages.join("<br>")
     redirect_to @user
   end
   
@@ -79,7 +86,7 @@ class AttendancesController < ApplicationController
         if attendance.update_attributes(item)
           if attendance.chg == 1
             flash[:success] = "残業申請の変更を送信しました。"
-            attendance.update_attributes(superior_marking: 0)
+            attendance.update_attributes(superior_marking: 0, chg: 0)
           else
             flash[:danger] = "「変更」にチェックを入れて下さい。"
           end
