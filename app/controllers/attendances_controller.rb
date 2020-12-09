@@ -59,7 +59,6 @@ class AttendancesController < ApplicationController
   end 
   
   def update_overtime_motion
-    
     @superiors = User.where(superior: true).where.not(name: current_user.name)
     ActiveRecord::Base.transaction do
       @attendance.update(overtime_params)
@@ -81,19 +80,23 @@ class AttendancesController < ApplicationController
   
   def update_overtime_message
     @user = User.find(params[:id])
-    edit_overtime_message_params.each do |id, item|
-      attendance = Attendance.find(id)
-        if attendance.update_attributes(item)
-          if attendance.chg == 1
-            flash[:success] = "残業申請の変更を送信しました。"
-            attendance.update_attributes(superior_marking: 0, chg: 0)
-          else
-            flash[:danger] = "「変更」にチェックを入れて下さい。"
-          end
-        end 
-      end
+    
+    ActiveRecord::Base.transaction do
+      edit_overtime_message_params.each do |id, item|
+        @attendance = Attendance.find(id)
+        @attendance.update(item)
+        @attendance.save!(context: :overtime_mess_vali)
+      end 
+    end 
+    flash[:success] = "残業申請の変更を送信しました。"
+    @attendance.update_attributes(request_status: 0)
+    redirect_to @user
+  rescue ActiveRecord::RecordInvalid
+    flash[:danger] = @attendance.errors.full_messages.join("<br>")
     redirect_to @user
   end
+    
+
   
   def confirm_one_month
     @worked_sum = @attendances.where.not(started_at: nil).count

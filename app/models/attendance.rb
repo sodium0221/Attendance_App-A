@@ -10,6 +10,11 @@ class Attendance < ApplicationRecord
     validates :superior_marking, presence: true
   end
   
+  with_options on: :overtime_mess_vali do
+    validate :hoge
+    validate :hoga
+  end
+  
   enum request_status:{
     "なし" => 0, "申請中" => 1, "承認" => 2, "否認" => 3
   }
@@ -43,4 +48,14 @@ class Attendance < ApplicationRecord
   def month_day_adjustment(f, d)
     f.change(month: d.month, day: d.day)
   end
+  
+  def hoge
+    errors.add(:request_status, "を承認か否認にしてください") if request_status == "なし" || request_status == "申請中"
+  end
+  
+  def hoga
+    errors.add(:chg, "にチェックを入れてください") if chg == 0
+  end
+    
+    
 end

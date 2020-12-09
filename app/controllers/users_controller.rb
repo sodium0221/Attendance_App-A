@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   def show
     @worked_sum = @attendances.where.not(started_at: nil).count
     @attendance = @user.attendances.where(worked_on: @first_day..@last_day)
-    @notice = Attendance.where(superior_marking: current_user.name)
+    @notice = Attendance.where(superior_marking: current_user.name, request_status: 1)
     @notice_sum = @notice.count
     @superiors = User.where(superior: true).where.not(name: current_user.name)
     @notice_superior = Attendance.where(superior_marking: current_user.name)

@@ -22,7 +22,7 @@
                 <th>変更</th>
                 <th>勤怠を確認する</th>
               </tr>
-              <% user.attendances.where(superior_marking: current_user.name).each do |day| %>
+              <% user.attendances.where(superior_marking: current_user.name, request_status: 1).each do |day| %>
                 <%= f.fields_for "attendances[]", day do |att| %>
                   <tr>
                     <td><%= l(day.worked_on, format: :short) %></td>
@@ -33,7 +33,7 @@
                     <td><%= day.operation %></td>
                     <td><%= att.select :request_status, Attendance.request_statuses.keys.to_a, {}, class: "form-control" %></td>
                     <td><%= att.check_box :chg %></td>
-                    <td><%= link_to "確認", attendances_confirm_one_month_user_path(day), class: "btn btn-sm btn-primary" %></td>
+                    <td><%= link_to "確認", attendances_confirm_one_month_user_path(user.id), class: "btn btn-sm btn-primary" %></td>
                   </tr>
                 <% end %>
               <% end %>
