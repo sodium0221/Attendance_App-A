@@ -1,7 +1,7 @@
 class AttendancesController < ApplicationController
   include AttendancesHelper
   
-  before_action :set_user2, only: [:update_overtime_motion]
+  before_action :set_user2, only: [:update_overtime_motion, :update_deano_motion]
   before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :confirm_one_month]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
@@ -112,11 +112,18 @@ class AttendancesController < ApplicationController
   
   def update_deano_motion
     @user = User.find(params[:id])
-    @attendances.each do |att|
-      att.update_attributes(deano_motion_params)
+    @attendance = @user.attendances
+    @mark1_day = @attendance.find_by(worked_on: @first_day)
+    ActiveRecord::Base.transaction do
+      @mark1_day.update(deano_motion_params)
+      @mark1_day.save!(context: :deano_motion_vali)
     end
-    @attendances.update_all(superior_status1: 1)
-    redirect_to @user
+      flash[:success] = "#{@mark1_day.superior_mark1}に#{l(@first_day, format: :mon)}の勤怠承認を送信しました"
+      @mark1_day.update_attributes(superior_status1: 1)
+      redirect_to @user
+  rescue ActiveRecord::RecordInvalid
+    flash[:danger] = "送信できませんでした。送信先を指定してください。"
+    render 'user/top'
   end
   
   def edit_deano_message
@@ -144,7 +151,7 @@ class AttendancesController < ApplicationController
   end
   
   def deano_motion_params
-    params.require(:attendance).permit([0], :superior_mark1)
+    params.require(:attendance).permit(:superior_mark1)
   end
   
   def admin_or_correct_user

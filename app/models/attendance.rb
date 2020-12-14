@@ -11,13 +11,16 @@ class Attendance < ApplicationRecord
   end
   
   with_options on: :overtime_mess_vali do
-    validate :hoge
-    validate :hoga
+    validate :overtime_message_request_status_check
+    validate :overtime_message_chg_check
   end
   
+  validates :superior_mark1, presence: true, on: :deano_motion_vali
+  
   enum request_status:{
-    "なし" => 0, "申請中" => 1, "承認" => 2, "否認" => 3
+    "なし": 0, "申請中": 1, "承認": 2, "否認": 3
   }
+  
 
   # 出勤時間が存在しない場合、退勤時間は無効
   validate :finished_at_is_invalid_without_a_started_at
@@ -49,13 +52,12 @@ class Attendance < ApplicationRecord
     f.change(month: d.month, day: d.day)
   end
   
-  def hoge
+  def overtime_message_request_status_check
     errors.add(:request_status, "を承認か否認にしてください") if request_status == "なし" || request_status == "申請中"
   end
   
-  def hoga
+  def overtime_message_chg_check
     errors.add(:chg, "にチェックを入れてください") if chg == 0
   end
-    
     
 end

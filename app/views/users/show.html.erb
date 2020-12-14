@@ -30,8 +30,8 @@
 <% if @user.superior %>
   <div>
     <%= link_to_if @notice_superior.present?, "【所属長承認申請のお知らせ】", '#', remote: true, class: "message_alert" %>
-    <% if @alert.present? %>
-      <font class="<%= "#{apply_message}"%>"><%= "#{@notice_superior_sum}件の通知があります" %></font>
+    <% if @att_notice.present? %>
+      <font class="<%= "#{apply_message}"%>"><%= "#{@att_notice_sum}件の通知があります" %></font>
     <% end %>
   </div> 
   
@@ -122,24 +122,39 @@
           <td><%= adjustment_out_of_time(day, @user) %></td>
           <td><%= day.operation %></td>
           <td><%= superior_mark_overtime(day) %></td>
+          <td><%= day.superior_status1 %></td>
         </tr>
       <% end %>
     </tbody>
     
     <tfoot>
       <tr>
-        <td></td>
+        <td><%= @mark1_day.superior_status1 %></td>
         <td colspan="2"></td>
         <td colspan="6"></td>
         <td>在社時間</td>
         <td colspan="5"></td>
         <td>
-          <h6>所属長承認</h6>
-          <%= form_with(model:@attendance, url: attendances_update_deano_motion_user_path(@user), local: true, method: :patch) do |f| %>
-            <%= f.collection_select :superior_mark1, @superiors, :name, :name, { prompt: "選択してください" }, class: "form-control" %>
-            <%= f.submit "申請", class: "btn btn-primary btn-block btn-att_app" %>
+          <% if @mark1_day.superior_status1 == 0 %>
+            <h6>所属長承認：未</h6>
+            <%= form_with(model:@attendance, url: attendances_update_deano_motion_user_path(date: @first_day), local: true, method: :patch) do |f| %>
+              <%= f.collection_select :superior_mark1, @superiors, :name, :name, { prompt: "選択してください" }, class: "form-control" %>
+              <%= f.submit "申請", class: "btn btn-primary btn-block btn-att_app" %>
+            <% end %>
+          <% elsif @mark1_day.superior_status1 == 1 %>
+            <h6><%= @mark1_day.superior_mark1 %>へ申請中</h6>
+          <% elsif @mark1_day.superior_status1 == 2 %>
+            <h6><%= @mark1_day.superior_marl1 %>から承認済</h6>
+          <% elsif @mark1_day.superior_status1 == 3 %>
+            <h6><%= @mark1_day.superior_mark1 %>から未承認</h6>
+            <%= form_with(model:@attendance, url: attendances_update_deano_motion_user_path(date: @first_day), local: true, method: :patch) do |f| %>
+              <%= f.collection_select :superior_mark1, @superiors, :name, :name, { prompt: "選択してください" }, class: "form-control" %>
+              <%= f.submit "申請", class: "btn btn-primary btn-block btn-att_app" %>
+            <% end %>
           <% end %>
         </td>
+        <td><%= l(@mark1_day.worked_on, format: :short) %></td>
+        
         
       </tr>
     </tfoot>

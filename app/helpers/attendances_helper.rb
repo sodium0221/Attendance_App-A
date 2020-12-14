@@ -61,4 +61,15 @@ module AttendancesHelper
       "残業否認"
     end 
   end
+  
+  #勤怠申請の支持者確認表示
+  def att_superior_status1(day)
+    if day.superior_status1 == "申請中"
+      day.superior_marking + "へ申請中"
+    elsif day.superior_status1 == "承認"
+      day.superior_marking + "から承認済"
+    elsif day.superior_status1 == "否認"
+      day.superior_marking + "から否認されました"
+    end
+  end
 end
