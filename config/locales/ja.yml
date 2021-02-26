@@ -209,3 +209,10 @@ ja:
       hour: "%H"
       min: "%M"
     pm: 午後
+  enums:
+    attendance:
+      superior_status1:
+        none: なし
+        pending: 申請中
+        acceptation: 承認
+        denegation: 否認

@@ -2,7 +2,7 @@ class AttendancesController < ApplicationController
   include AttendancesHelper
   
   before_action :set_user2, only: [:update_overtime_motion, :update_deano_motion]
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :confirm_one_month]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :edit_deano_message, :confirm_one_month]
   before_action :logged_in_user, only: [:update, :edit_one_month]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
   before_action :set_one_month, only: [:edit_one_month, :confirm_one_month, :update_overtime_motion, :edit_deano_motion, :update_deano_motion]
@@ -60,8 +60,12 @@ class AttendancesController < ApplicationController
   
   def update_overtime_motion
     @superiors = User.where(superior: true).where.not(name: current_user.name)
+    @attendance.end_time = @user.designated_work_end_time.change(year: @attendance.worked_on.year,
+                                                                 month: @attendance.worked_on.month,
+                                                                 day: @attendance.worked_on.day)
     ActiveRecord::Base.transaction do
       @attendance.update(overtime_params)
+      @attendance.update_attributes(finish_overtime: @attendance.finish_overtime.change(year: @attendance.worked_on.year, month: @attendance.worked_on.month, day: @attendance.worked_on.day))
       @attendance.save!(context: :overtime_vali)
     end
     @attendance.update_attributes(request_status: 1)
@@ -74,7 +78,7 @@ class AttendancesController < ApplicationController
   
   def edit_overtime_message
     @user = User.find(params[:id])
-    @days = Attendance.where(superior_marking: current_user.name).pluck(:user_id).uniq
+    @days = Attendance.where(superior_marking: current_user.name, request_status: 1).pluck(:user_id).uniq
     @users = User.find(@days)
   end
   
@@ -89,7 +93,6 @@ class AttendancesController < ApplicationController
       end 
     end 
     flash[:success] = "残業申請の変更を送信しました。"
-    @attendance.update_attributes(request_status: 0)
     redirect_to @user
   rescue ActiveRecord::RecordInvalid
     flash[:danger] = @attendance.errors.full_messages.join("<br>")
@@ -119,7 +122,7 @@ class AttendancesController < ApplicationController
       @mark1_day.save!(context: :deano_motion_vali)
     end
       flash[:success] = "#{@mark1_day.superior_mark1}に#{l(@first_day, format: :mon)}の勤怠承認を送信しました"
-      @mark1_day.update_attributes(superior_status1: 1)
+      @mark1_day.update_attributes(superior_mark1: 1)
       redirect_to @user
   rescue ActiveRecord::RecordInvalid
     flash[:danger] = "送信できませんでした。送信先を指定してください。"
@@ -127,9 +130,25 @@ class AttendancesController < ApplicationController
   end
   
   def edit_deano_message
+    @user = User.find(params[:id])
+    @days = Attendance.where(superior_mark1: current_user.name, superior_status1: 1).pluck(:user_id).uniq
+    @users = User.find(@days)
   end 
   
   def update_deano_message
+    @user = User.find(params[:id])
+    ActiveRecord::Base.transaction do 
+      deano_message_params.each do |id, item|
+        @attendance = Attendance.find(id)
+        @attendance.update(item)
+        @attendance.save!(context: :deano_mess_vali)
+      end 
+    end 
+    flash[:success] = "勤怠申請の変更を送信しました。"
+    redirect_to @user
+  rescue ActiveRecord::RecordInvalid
+    flash[:danger] = @attendance.errors.full_messages.join("<br>")
+    redirect_to @user
   end
   
   private
@@ -152,6 +171,10 @@ class AttendancesController < ApplicationController
   
   def deano_motion_params
     params.require(:attendance).permit(:superior_mark1)
+  end
+  
+  def deano_message_params
+    params.require(:user).permit(attendances: [:superior_mark1, :chg1])[:attendances]
   end
   
   def admin_or_correct_user

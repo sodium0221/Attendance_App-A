@@ -15,7 +15,7 @@ class UsersController < ApplicationController
     @mark1_day = @attendance.find_by(worked_on: @first_day)
     @notice = Attendance.where(superior_marking: current_user.name, request_status: 1)
     @notice_sum = @notice.count
-    @att_notice = Attendance.where.not(superior_mark1: 0)
+    @att_notice = Attendance.where(superior_mark1: current_user.name, superior_status1: 1)
     @att_notice_sum = @att_notice.count
     @superiors = User.where(superior: true).where.not(name: current_user.name)
     @notice_superior = Attendance.where(superior_marking: current_user.name)

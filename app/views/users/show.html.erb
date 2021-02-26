@@ -10,7 +10,7 @@
       </td>
       <td>
         指定勤務開始時間　<%= format_time(@user.designated_work_start_time) %><br>
-        指定勤務終了時間　<%= format_time(@user.designated_work_end_time) %> 
+        指定勤務終了時間　<%=format_time(@user.designated_work_end_time) %> 
       </td>
       <td colspan="3">基本時間：<%= format_basic_info(@user.basic_time) %></td>
       <td>月初日：<%= l(@first_day, format: :short) %></td>
@@ -29,7 +29,7 @@
 
 <% if @user.superior %>
   <div>
-    <%= link_to_if @notice_superior.present?, "【所属長承認申請のお知らせ】", '#', remote: true, class: "message_alert" %>
+    <%= link_to_if @notice_superior.present?, "【所属長承認申請のお知らせ】", attendances_edit_deano_message_user_path(@user), remote: true, class: "message_alert" %>
     <% if @att_notice.present? %>
       <font class="<%= "#{apply_message}"%>"><%= "#{@att_notice_sum}件の通知があります" %></font>
     <% end %>
@@ -119,10 +119,10 @@
           <td><%= day.note %></td>
           <td><%= l(day.finish_overtime, format: :hour) if day.finish_overtime.present?  %></td>
           <td><%= l(day.finish_overtime, format: :min) if day.finish_overtime.present? %></td>
-          <td><%= adjustment_out_of_time(day, @user) %></td>
+          <td><%= format_time_delta(day, @user) %></td>
           <td><%= day.operation %></td>
           <td><%= superior_mark_overtime(day) %></td>
-          <td><%= day.superior_status1 %></td>
+          <td><%= day.finish_overtime %></td>
         </tr>
       <% end %>
     </tbody>
@@ -135,17 +135,17 @@
         <td>在社時間</td>
         <td colspan="5"></td>
         <td>
-          <% if @mark1_day.superior_status1 == 0 %>
+          <% if @mark1_day.superior_status1 == "none" %>
             <h6>所属長承認：未</h6>
             <%= form_with(model:@attendance, url: attendances_update_deano_motion_user_path(date: @first_day), local: true, method: :patch) do |f| %>
               <%= f.collection_select :superior_mark1, @superiors, :name, :name, { prompt: "選択してください" }, class: "form-control" %>
               <%= f.submit "申請", class: "btn btn-primary btn-block btn-att_app" %>
             <% end %>
-          <% elsif @mark1_day.superior_status1 == 1 %>
+          <% elsif @mark1_day.superior_status1 == "pending" %>
             <h6><%= @mark1_day.superior_mark1 %>へ申請中</h6>
-          <% elsif @mark1_day.superior_status1 == 2 %>
+          <% elsif @mark1_day.superior_status1 == "acceptation" %>
             <h6><%= @mark1_day.superior_marl1 %>から承認済</h6>
-          <% elsif @mark1_day.superior_status1 == 3 %>
+          <% elsif @mark1_day.superior_status1 == "denegation" %>
             <h6><%= @mark1_day.superior_mark1 %>から未承認</h6>
             <%= form_with(model:@attendance, url: attendances_update_deano_motion_user_path(date: @first_day), local: true, method: :patch) do |f| %>
               <%= f.collection_select :superior_mark1, @superiors, :name, :name, { prompt: "選択してください" }, class: "form-control" %>
@@ -153,7 +153,7 @@
             <% end %>
           <% end %>
         </td>
-        <td><%= l(@mark1_day.worked_on, format: :short) %></td>
+        <td><%= @mark1_day.superior_status1 %></td>
         
         
       </tr>
@@ -169,3 +169,5 @@
 <div id="edit-overtime-message" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 
 <div id="edit-deano-motion" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+
+<div id="edit-deano-message" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

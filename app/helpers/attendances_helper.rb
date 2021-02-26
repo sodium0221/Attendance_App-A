@@ -19,13 +19,22 @@ module AttendancesHelper
     format("%.2f", (((finish - start) / 60) / 60.0))
   end
   
+  # 日付を"worked_on"に変更する
+  def change_to_worked_on(finish_overtime, worked_on)
+    finish_overtime.change(year: worked_on.year, month: worked_on.month, day: worked_on.day)
+  end
+    
+  
   # 時間外時間算出
-  def format_time_delta(end_time, overtime, day)
-    if end_time.present? && overtime.present?
-      if day.next_day == 1
-        format("%.2f", (((overtime + 1.day - end_time) / 60) / 60))
+  def format_time_delta(att, user)
+    att.end_time = user.designated_work_end_time.change(year: att.worked_on.year,
+                                                        month: att.worked_on.month,
+                                                        day: att.worked_on.day)
+    if att.finish_overtime.present?
+      if att.next_day == 1
+        format("%.2f", ((((att.finish_overtime + 1.day) - att.end_time) / 60) / 60))
       else
-        format("%.2f", (((overtime - end_time) / 60) / 60))
+        format("%.2f", (((att.finish_overtime - att.end_time) / 60) / 60))
       end
     end
   end
@@ -34,6 +43,7 @@ module AttendancesHelper
   def adjustment_out_of_time(att, user)
     att.end_time = user.designated_work_end_time.change(month: att.worked_on.month, day: att.worked_on.day)
     if att.finish_overtime.present?
+      att.finish_overtime.change(month: att.worked_on.month, day: att.worked_on.day)
       if att.next_day == 1
         format("%.2f", (((att.finish_overtime.change(month: att.worked_on.month, day: att.worked_on.day) + 1.day - att.end_time) / 60) / 60))
       else

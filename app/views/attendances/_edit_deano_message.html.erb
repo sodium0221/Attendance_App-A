@@ -1,0 +1,39 @@
+<% provide(:class_text, 'edit--deano-message') %>
+
+<%= form_with(model: @user, url: attendances_update_deano_message_user_path(@user), local: true, method: :patch) do |f| %>
+  <div class="modal-dialog modal-dialog-center-overtime">
+    <div class="modal-content">
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <% @users.each do |user| %>
+          <table class="table table-bordered table-condensed" id="edit-overtime-message-modal">
+            <tbody>
+              <caption>【<%= user.name %>からの勤怠申請】</caption>
+              <tr>
+                <th>月</th>
+                <th>指示者確認㊞</th>
+                <th>変更</th>
+                <th>勤怠を確認する</th>
+              </tr>
+              <% user.attendances.where(superior_mark1: current_user.name, superior_status1: 1).each do |day| %>
+                <%= f.fields_for "attendances[]", day do |att| %>
+                  <tr>
+                    <td><%= l(day.worked_on, format: :mon) %></td>
+                    <td><%= att.select :superior_status1, options_for_select_form_enum(Attendance, :superior_status1), {}, class: "form-control" %></td>
+                    <td><%= att.check_box :chg1 %></td>
+                    <td><%= link_to "確認", attendances_confirm_one_month_user_path(user.id, date: day.worked_on.beginning_of_month), class: "btn btn-sm btn-primary" %></td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        <% end %>
+        <div class="message-btn">
+          <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

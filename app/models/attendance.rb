@@ -17,9 +17,18 @@ class Attendance < ApplicationRecord
   
   validates :superior_mark1, presence: true, on: :deano_motion_vali
   
+  with_options on: :deano_mess_vali do 
+    validate :deano_message_request_status_check
+    validate :deano_message_chg_check
+  end
+  
   enum request_status:{
     "なし": 0, "申請中": 1, "承認": 2, "否認": 3
   }
+  
+  enum superior_status1:{
+    none: 0, pending: 1, acceptation: 2, denegation: 3
+  }, _prefix: true
   
 
   # 出勤時間が存在しない場合、退勤時間は無効
@@ -40,9 +49,9 @@ class Attendance < ApplicationRecord
   def finish_overtime_calling
     if finish_overtime == nil
       errors.add(:finish_overtime, "を入力してください")
-    elsif month_day_adjustment(finish_overtime, user.designated_work_end_time) > user.designated_work_end_time && next_day == 1
+    elsif (finish_overtime > end_time) && next_day == 1
       errors.add(:next_day, "のチェックを外してください")
-    elsif month_day_adjustment(finish_overtime, user.designated_work_end_time) < user.designated_work_end_time && next_day == 0
+    elsif (finish_overtime < end_time) && next_day == 0
       errors.add(:next_day, "のチェックを入れてください")
     end 
   end
@@ -59,5 +68,12 @@ class Attendance < ApplicationRecord
   def overtime_message_chg_check
     errors.add(:chg, "にチェックを入れてください") if chg == 0
   end
-    
+  
+  def deano_message_request_status_check
+    errors.add(:superior_status1, "を承認か否認にしてください") if superior_status1 == "none" || superior_status1 == "pending"
+  end
+  
+  def deano_message_chg_check
+    errors.add(:chg1, "にチェックを入れてください") if chg1 == 0
+  end
 end

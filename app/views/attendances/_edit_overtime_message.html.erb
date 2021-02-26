@@ -29,11 +29,11 @@
                     <td class='<%= "wday#{day.worked_on.wday}"%>'><%= $days_of_the_week[day.worked_on.wday] %></td>
                     <td><%= l(day.finish_overtime, format: :time) if day.finish_overtime.present? %></td>
                     <td><%= format_time(user.designated_work_end_time) %></td>
-                    <td><%= adjustment_out_of_time(day, user) %></td>
+                    <td><%= format_time_delta(day, @user) %></td>
                     <td><%= day.operation %></td>
                     <td><%= att.select :request_status, Attendance.request_statuses.keys.to_a, {}, class: "form-control" %></td>
                     <td><%= att.check_box :chg %></td>
-                    <td><%= link_to "確認", attendances_confirm_one_month_user_path(user.id), class: "btn btn-sm btn-primary" %></td>
+                    <td><%= link_to "確認", attendances_confirm_one_month_user_path(date: day.worked_on.beginning_of_month), class: "btn btn-sm btn-primary" %></td>
                   </tr>
                 <% end %>
               <% end %>
