@@ -65,7 +65,9 @@ class AttendancesController < ApplicationController
                                                                  day: @attendance.worked_on.day)
     ActiveRecord::Base.transaction do
       @attendance.update(overtime_params)
-      @attendance.update_attributes(finish_overtime: @attendance.finish_overtime.change(year: @attendance.worked_on.year, month: @attendance.worked_on.month, day: @attendance.worked_on.day))
+      @attendance.update_attributes(finish_overtime: @attendance.finish_overtime.change(year: @attendance.worked_on.year, 
+                                                                                        month: @attendance.worked_on.month, 
+                                                                                        day: @attendance.worked_on.day))
       @attendance.save!(context: :overtime_vali)
     end
     @attendance.update_attributes(request_status: 1)
@@ -122,11 +124,11 @@ class AttendancesController < ApplicationController
       @mark1_day.save!(context: :deano_motion_vali)
     end
       flash[:success] = "#{@mark1_day.superior_mark1}に#{l(@first_day, format: :mon)}の勤怠承認を送信しました"
-      @mark1_day.update_attributes(superior_mark1: 1)
+      @mark1_day.update_attributes(superior_status1: 1)
       redirect_to @user
   rescue ActiveRecord::RecordInvalid
     flash[:danger] = "送信できませんでした。送信先を指定してください。"
-    render 'user/top'
+    redirect_to @user
   end
   
   def edit_deano_message
@@ -154,7 +156,7 @@ class AttendancesController < ApplicationController
   private
   # 1ヶ月分の勤怠情報を扱います。
   def attendances_params
-    params.require(:user).permit(attendances: [:started_at, :finished_at, :note])[:attendances]
+    params.require(:user).permit(attendances: [:started_at_chg, :finished_at_chg, :next_day2, :note, :superior_mark2])[:attendances]
   end
   
   def overtime_params
@@ -174,7 +176,7 @@ class AttendancesController < ApplicationController
   end
   
   def deano_message_params
-    params.require(:user).permit(attendances: [:superior_mark1, :chg1])[:attendances]
+    params.require(:user).permit(attendances: [:superior_status1, :chg1])[:attendances]
   end
   
   def admin_or_correct_user

@@ -32,6 +32,9 @@ ja:
           operation: 業務処理内容
           superior_marking: 指示者確認㊞
           request_status: 指示者確認㊞
+          superior_mark1: 指示者確認㊞
+          superior_status1: 指示者確認㊞
+          chg1: 変更
           chg: 変更
           out_of_time: 時間外時間
         site:

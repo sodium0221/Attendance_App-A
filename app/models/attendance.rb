@@ -15,7 +15,9 @@ class Attendance < ApplicationRecord
     validate :overtime_message_chg_check
   end
   
-  validates :superior_mark1, presence: true, on: :deano_motion_vali
+  with_options on: :deano_motion_vali do
+    validate :deano_motion_request_status_check
+  end
   
   with_options on: :deano_mess_vali do 
     validate :deano_message_request_status_check
@@ -69,8 +71,12 @@ class Attendance < ApplicationRecord
     errors.add(:chg, "にチェックを入れてください") if chg == 0
   end
   
+  def deano_motion_request_status_check
+    errors.add(:superior_mark1, "を選択してください") if superior_mark1 == ""
+  end
+  
   def deano_message_request_status_check
-    errors.add(:superior_status1, "を承認か否認にしてください") if superior_status1 == "none" || superior_status1 == "pending"
+    errors.add(:superior_status1, "を承認か否認にしてください") if superior_status1 == 0 || superior_status1 == 1
   end
   
   def deano_message_chg_check

@@ -122,7 +122,6 @@
           <td><%= format_time_delta(day, @user) %></td>
           <td><%= day.operation %></td>
           <td><%= superior_mark_overtime(day) %></td>
-          <td><%= day.finish_overtime %></td>
         </tr>
       <% end %>
     </tbody>
@@ -144,7 +143,7 @@
           <% elsif @mark1_day.superior_status1 == "pending" %>
             <h6><%= @mark1_day.superior_mark1 %>へ申請中</h6>
           <% elsif @mark1_day.superior_status1 == "acceptation" %>
-            <h6><%= @mark1_day.superior_marl1 %>から承認済</h6>
+            <h6><%= @mark1_day.superior_mark1 %>から承認済</h6>
           <% elsif @mark1_day.superior_status1 == "denegation" %>
             <h6><%= @mark1_day.superior_mark1 %>から未承認</h6>
             <%= form_with(model:@attendance, url: attendances_update_deano_motion_user_path(date: @first_day), local: true, method: :patch) do |f| %>
@@ -153,7 +152,6 @@
             <% end %>
           <% end %>
         </td>
-        <td><%= @mark1_day.superior_status1 %></td>
         
         
       </tr>
