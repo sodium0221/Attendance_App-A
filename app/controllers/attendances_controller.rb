@@ -156,7 +156,7 @@ class AttendancesController < ApplicationController
   private
   # 1ヶ月分の勤怠情報を扱います。
   def attendances_params
-    params.require(:user).permit(attendances: [:started_at_chg, :finished_at_chg, :next_day2, :note, :superior_mark2])[:attendances]
+    params.require(:user).permit(attendances: [:started_at, :finished_at, :next_day, :note, :superior_mark1])[:attendances]
   end
   
   def overtime_params
