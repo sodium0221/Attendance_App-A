@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210228112333) do
+ActiveRecord::Schema.define(version: 20201217083643) do
 
   create_table "attendances", force: :cascade do |t|
     t.date "worked_on"
@@ -34,9 +34,6 @@ ActiveRecord::Schema.define(version: 20210228112333) do
     t.integer "out_of_time"
     t.integer "chg1"
     t.integer "chg2"
-    t.datetime "started_at_chg"
-    t.datetime "finished_at_chg"
-    t.integer "next_day2"
     t.index ["user_id"], name: "index_attendances_on_user_id"
   end
 
@@ -57,8 +54,8 @@ ActiveRecord::Schema.define(version: 20210228112333) do
     t.string "remember_digest"
     t.boolean "admin", default: false
     t.string "affiliation"
-    t.datetime "basic_time", default: "2020-12-06 23:00:00"
-    t.datetime "work_time", default: "2020-12-06 22:30:00"
+    t.datetime "basic_time", default: "2021-03-12 23:00:00"
+    t.datetime "work_time", default: "2021-03-12 22:30:00"
     t.integer "employee_number"
     t.string "uid"
     t.datetime "designated_work_start_time"
