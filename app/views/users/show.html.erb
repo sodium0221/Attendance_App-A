@@ -48,6 +48,7 @@
       <font class="<%= "#{apply_message}"%>"><%= "#{@notice_sum}件の通知があります" %></font>
     <% end %>
   </div> 
+<% end %>
 
   <div class="btn-users-shows">
     <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-sm btn-primary" %>
@@ -56,7 +57,6 @@
   <div class="btn-users-get">
     <%= link_to "勤怠修正ログ(承認済)", '#', class: "btn btn-primary" %>
   </div>
-<% end %>
 
 <div>
   <table class="table table-bordered table-condensed table-hover" id="table-attendances">
@@ -121,7 +121,9 @@
           <td><%= l(day.finish_overtime, format: :min) if day.finish_overtime.present? %></td>
           <td><%= format_time_delta(day, @user) %></td>
           <td><%= day.operation %></td>
-          <td><%= superior_mark_overtime(day) %></td>
+          <td><%= superior_mark_overtime(day) %><% ("<br>") %>
+              <%= att_superior_status1(day) %></td>
+         <td><%= day.superior_mark2 %></td>
         </tr>
       <% end %>
     </tbody>

@@ -25,6 +25,13 @@ class Attendance < ApplicationRecord
     validate :deano_message_chg_check
   end
   
+  with_options on: :update_one_month_vali do
+    validate :finished_at_is_invalid_without_a_started_at
+    validate :started_at_than_finished_at_fast_if_invalid
+    validate :one_month_request_status_check
+    validates :note, length: { maximum: 50 }
+  end
+  
   enum request_status:{
     "なし": 0, "申請中": 1, "承認": 2, "否認": 3
   }
@@ -32,6 +39,10 @@ class Attendance < ApplicationRecord
   enum superior_status1:{
     none: 0, pending: 1, acceptation: 2, denegation: 3
   }, _prefix: true
+  
+  enum superior_status2:{
+    none: 0, pending: 1, acceptation: 2, denegation: 3
+  }, _suffix: true
   
 
   # 出勤時間が存在しない場合、退勤時間は無効
@@ -74,6 +85,10 @@ class Attendance < ApplicationRecord
   
   def deano_motion_request_status_check
     errors.add(:superior_mark1, "を選択してください") if superior_mark1 == ""
+  end
+  
+  def one_month_request_status_check
+    errors.add(:superior_mark2, "を選択してください") if superior_mark2 == ""
   end
   
   def deano_message_request_status_check

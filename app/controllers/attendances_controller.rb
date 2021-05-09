@@ -34,18 +34,27 @@ class AttendancesController < ApplicationController
   end
   
   def update_one_month
-    ActiveRecord::Base.transaction do
-      attendances_params.each do |id, item|
-        attendance = Attendance.find(id)
-        attendance.update_attributes!(item)
-      end 
+    attendances = []
+    params[:user][:attendances].each do |id|
+      Attendance.where(id: id.to_i).each do |attendance|
+        if params[:user][:attendances][id][:superior_mark2].present?
+          attendance = Attendance.find(id)
+          attendance.started_at = params[:user][:attendances][id][:started_at]
+          attendance.finished_at = params[:user][:attendances][id][:finished_at]
+          attendance.next_day = params[:user][:attendances][id][:next_day]
+          attendance.note = params[:user][:attendances][id][:note]
+          attendance.superior_mark2 = params[:user][:attendances][id][:superior_mark2]
+          attendances << attendance
+        end
+      end
     end 
-    flash[:success] = "1ヶ月分の勤怠情報を更新しました。"
+    Attendance.import attendances, on_duplicate_key_update: [:started_at, :finished_at, :next_day, 
+                                                             :note, :superior_mark2]
+    flash[:success] = "必須項目記入済みの勤怠変更を送信しました"
     redirect_to user_url(date: params[:date])
-  rescue ActiveRecord::RecordInvalid
-    flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
-    redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
+  
+
   
   def approval_alert
   end
@@ -156,7 +165,7 @@ class AttendancesController < ApplicationController
   private
   # 1ヶ月分の勤怠情報を扱います。
   def attendances_params
-    params.require(:user).permit(attendances: [:started_at, :finished_at, :next_day, :note, :superior_mark1])[:attendances]
+    params.require(:user).permit(attendances: [:started_at, :finished_at, :next_day, :note, :superior_mark2])[:attendances]
   end
   
   def overtime_params

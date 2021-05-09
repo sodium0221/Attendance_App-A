@@ -16,9 +16,10 @@ gem 'jquery-rails'
 gem 'turbolinks',   '~> 5'
 gem 'jbuilder',     '~> 2.5'
 gem 'enum_help'
+gem 'activerecord-import', '0.20.2'
 
 group :development, :test do
-  gem 'sqlite3'
+  gem "sqlite3", git: "https://github.com/stomar/sqlite3-ruby", branch: "add-dlfcn"
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 
