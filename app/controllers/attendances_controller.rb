@@ -1,11 +1,11 @@
 class AttendancesController < ApplicationController
   include AttendancesHelper
   
-  before_action :set_user2, only: [:update_overtime_motion, :update_deano_motion]
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :edit_deano_message, :confirm_one_month]
-  before_action :logged_in_user, only: [:update, :edit_one_month]
-  before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :set_one_month, only: [:edit_one_month, :confirm_one_month, :update_overtime_motion, :edit_deano_motion, :update_deano_motion]
+  before_action :set_user2, only: [:update_overtime_motion, :update_deano_motion, :edit_one_month_accept]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :edit_deano_message, :confirm_one_month, :edit_one_month_accept]
+  before_action :logged_in_user, only: [:update, :edit_one_month, :edit_one_month_accept]
+  before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :edit_one_month_accept]
+  before_action :set_one_month, only: [:edit_one_month, :confirm_one_month, :update_overtime_motion, :edit_deano_motion, :update_deano_motion, :edit_one_month_accept]
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
   
@@ -34,24 +34,35 @@ class AttendancesController < ApplicationController
   end
   
   def update_one_month
-    attendances = []
-    params[:user][:attendances].each do |id|
-      Attendance.where(id: id.to_i).each do |attendance|
-        if params[:user][:attendances][id][:superior_mark2].present?
-          attendance = Attendance.find(id)
-          attendance.started_at = params[:user][:attendances][id][:started_at]
-          attendance.finished_at = params[:user][:attendances][id][:finished_at]
-          attendance.next_day = params[:user][:attendances][id][:next_day]
-          attendance.note = params[:user][:attendances][id][:note]
-          attendance.superior_mark2 = params[:user][:attendances][id][:superior_mark2]
-          attendances << attendance
+    ActiveRecord::Base.transaction do       
+      attendances_params.each do |id, item|         
+        if params[:user][:attendances][id][:superior_mark2].present?           
+          attendance = Attendance.find(id)           
+          attendance.update(item)
+          attendance.save!(context: :update_one_month_vali)           
+          attendance.update_attributes!(superior_status2: 1)
+        elsif params[:user][:attendances][id][:started_temp].present? ||
+              params[:user][:attendances][id][:finished_temp].present? ||
+              params[:user][:attendances][id][:note].present?
+              raise ActiveRecord::RecordInvalid
         end
-      end
-    end 
-    Attendance.import attendances, on_duplicate_key_update: [:started_at, :finished_at, :next_day, 
-                                                             :note, :superior_mark2]
-    flash[:success] = "必須項目記入済みの勤怠変更を送信しました"
-    redirect_to user_url(date: params[:date])
+      end      
+    end      
+    flash[:success] = "勤怠変更を申請しました。"     
+    redirect_to user_url(date: params[:date])   
+  rescue ActiveRecord::RecordInvalid     
+    flash[:danger] = "無効な入力があるので送信できませんでした。"
+    redirect_to attendances_edit_one_month_user_url(date: params[:date])
+  end
+  
+  def edit_one_month_accept
+    @user_id = Attendance.where(superior_mark2: current_user.name).pluck(:user_id).uniq
+    @users = User.find(@user_id)
+    @attendance = @user.attendances.where(worked_on: @first_day..@last_day)
+    @superiors = User.where(superior: true).where.not(name: current_user.name)
+  end
+  
+  def update_one_month_accept
   end
   
 
@@ -165,7 +176,7 @@ class AttendancesController < ApplicationController
   private
   # 1ヶ月分の勤怠情報を扱います。
   def attendances_params
-    params.require(:user).permit(attendances: [:started_at, :finished_at, :next_day, :note, :superior_mark2])[:attendances]
+    params.require(:user).permit(attendances: [:started_temp, :finished_temp, :next_day1, :note, :superior_mark2])[:attendances]
   end
   
   def overtime_params

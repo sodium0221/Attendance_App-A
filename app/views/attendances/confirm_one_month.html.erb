@@ -68,7 +68,7 @@
               <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
             <% end %>
           </td>
-          <td></td>
+          <td><%= day.note %></td>
           <td><%= l(day.finish_overtime, format: :hour) if day.finish_overtime.present?  %></td>
           <td><%= l(day.finish_overtime, format: :min) if day.finish_overtime.present? %></td>
           <td></td>

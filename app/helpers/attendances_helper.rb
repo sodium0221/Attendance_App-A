@@ -82,4 +82,37 @@ module AttendancesHelper
       day.superior_marking + "から否認されました"
     end
   end
+  
+  def att_superior_status2(day)
+    if day.superior_status2 == "申請中"
+      day.superior_mark2 + "へ勤怠修正を申請中"
+    elsif day.superior_status2 == "承認"
+      day.superior_mark2 + "から勤怠修正が承認されました"
+    elsif day.superior_status2 == "否認"
+      day.superior_mark2 + "から勤怠修正が否認されました"
+    end
+  end
+  
+  # 勤怠編集画面の時間表示調整
+  def show_time_field(time)
+    l(time, format: :time) if time.present?
+  end
+  
+  # 勤怠編集申請モーダルの時間表示調整
+  def none_data_time_for_view(time, f)
+    if time.present?
+      l(time, format: f)
+    end
+  end
+  
+  # 勤怠編集画面の条件分岐
+  def s_mark2_confirm(item)
+    if item.started_temp.present? && item.superior_mark2.nil?
+      return false
+    elsif item.finished_temp.present? && item.superior_mark2.nil?
+      return false
+    elsif item.note.present? && item.superior_mark2.nil?
+      return false
+    end 
+  end
 end

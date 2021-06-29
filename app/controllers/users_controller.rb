@@ -20,7 +20,8 @@ class UsersController < ApplicationController
     @superiors = User.where(superior: true).where.not(name: current_user.name)
     @notice_superior = Attendance.where(superior_marking: current_user.name)
     @notice_superior_sum = @notice_superior.count
-    @alert = nil
+    @att_change_alert = Attendance.where(superior_mark2: current_user.name)
+    @att_change_alert_sum = @att_change_alert.count
   end 
   
   def new

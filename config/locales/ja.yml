@@ -208,6 +208,7 @@ ja:
       time: "%H：%M"
       hour: "%H"
       min: "%M"
+      dtime: "%H:%M:%S"
     pm: 午後
   enums:
     attendance:

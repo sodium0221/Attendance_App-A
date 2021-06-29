@@ -19,7 +19,7 @@ gem 'enum_help'
 gem 'activerecord-import', '0.20.2'
 
 group :development, :test do
-  gem "sqlite3", git: "https://github.com/stomar/sqlite3-ruby", branch: "add-dlfcn"
+  gem "sqlite3", '1.4.0'
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
 
