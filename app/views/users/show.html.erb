@@ -55,7 +55,7 @@
     <%= link_to "CSV出力", '#', class: "btn btn-sm btn-primary" %>
   </div>
   <div class="btn-users-get">
-    <%= link_to "勤怠修正ログ(承認済)", '#', class: "btn btn-primary" %>
+    <%= link_to "勤怠修正ログ(承認済)", attendance_log_user_path(@user), class: "btn btn-primary" %>
   </div>
 
 <div>
@@ -96,15 +96,15 @@
           <td><%= link_to "残業申請", edit_overtime_motion_user_attendance_path(day.user_id, day.id), remote: true, class: "btn btn-primary" %></td>
           <td><%= l(day.worked_on, format: :short) %></td>
           <td class='<%= "wday#{day.worked_on.wday}"%>'><%= $days_of_the_week[day.worked_on.wday] %></td>
-          <td><%= l(day.started_at, format: :hour) if day.started_at.present? %></td>
-          <td><%= l(day.started_at, format: :min) if day.started_at.present? %></td>
+          <td><%= show_started_time(day, :hour) %></td>
+          <td><%= show_started_time(day, :min) %></td>
           <td>
             <% if btn_text = attendance_state(day) %>
               <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
             <% end %>
           </td>
-          <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
-          <td><%= l(day.finished_at, format: :min) if day.finished_at.present? %></td>
+          <td><%= show_finished_time(day, :hour) %></td>
+          <td><%= show_finished_time(day, :min) %></td>
           <td>
             <% if btn_text = quitting_state(day) %>
               <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>

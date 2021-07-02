@@ -1,0 +1,40 @@
+<% provide(:title, @user.name) %>
+<div>
+  <h1>勤怠ログ</h1>
+  <div>
+    <%= select_year(Date.today) %>年
+    <%= select_month(Date.today) %>
+  </div>
+  <div>
+    <%= link_to "⇦", attendance_log_user_path(date: @first_day.prev_month), class: "btn btn-primary" %>
+    <%= link_to "⇨", attendance_log_user_path(date: @first_day.next_month), class: "btn btn-primary" %>
+  </div>
+  <table class="table table-bordered table-condensed" id="table-attendances">
+    <thead>
+      <tr>
+        <td>日付</td>
+        <td>変更前出社時間</td>
+        <td>変更前退社時間</td>
+        <td>変更後出社時間</td>
+        <td>変更後退社時間</td>
+        <td>指示者</td>
+        <td>承認日</td>
+      </tr>
+    </thead>
+    <tbody>
+      <% @attendances.each do |day| %>
+        <% if day.accept_day.present? %>
+          <tr>
+            <td><%= l(day.worked_on, format: :short) %></td>
+            <td><%= time_of_view(day.started_at) %></td>
+            <td><%= time_of_view(day.finished_at) %></td>
+            <td><%= time_of_view(day.started_aft) %></td>
+            <td><%= time_of_view(day.finished_aft) %></td>
+            <td><%= day.superior_mark2 %></td>
+            <td><%= l(day.accept_day, format: :short2) %></td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>

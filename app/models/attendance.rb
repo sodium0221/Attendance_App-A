@@ -7,7 +7,7 @@ class Attendance < ApplicationRecord
   
   with_options on: :overtime_vali do
     validate :finish_overtime_calling
-    validates :operation, length: { maximum: 20 }, presence: true
+    validates :operation, length: { maximum: 50 }, presence: true
     validates :superior_marking, presence: true
   end
   
@@ -32,6 +32,11 @@ class Attendance < ApplicationRecord
     validate :next_day1_confirmation
     validates :note, presence: true, length: { maximum: 20 }
     validates :superior_mark2, presence: true
+  end
+  
+  with_options on: :one_month_accept_vali do
+    validate :one_month_accept_chg_check
+    validate :one_month_accept_status_check
   end
   
   enum request_status:{
@@ -82,11 +87,21 @@ class Attendance < ApplicationRecord
 
   # 翌日チェックのバリデーション
   def next_day1_confirmation
-    if (finished_temp > started_temp) && next_day1 == 1
+    if started_temp.nil? && finished_temp.nil?
+      errors.add(:started_temp, "を入力してください")
+    elsif (finished_temp > started_temp) && next_day1 == 1
       errors.add(:next_day, "のチェックを外してください")
     elsif (finished_temp < started_temp) && next_day1 == 0
       errors.add(:next_day, "のチェックを入れてください")
     end 
+  end
+  
+  def one_month_accept_status_check
+    errors.add(:superior_status2, "を承認か否認にしてください") if superior_status2 == "なし" || superior_status2 == "申請中"
+  end
+  
+  def one_month_accept_chg_check
+    errors.add(:chg2, "にチェックを入れてください") if chg2 == 0
   end
   
 

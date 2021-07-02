@@ -1,10 +1,9 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :attendance_log, :attendance_log]
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
-  before_action :set_one_month, only: :show
-  
+  before_action :set_one_month, only: [:show, :attendance_log]
   def index
     @users = User.paginate(page: params[:page])
   end 
@@ -20,7 +19,7 @@ class UsersController < ApplicationController
     @superiors = User.where(superior: true).where.not(name: current_user.name)
     @notice_superior = Attendance.where(superior_marking: current_user.name)
     @notice_superior_sum = @notice_superior.count
-    @att_change_alert = Attendance.where(superior_mark2: current_user.name)
+    @att_change_alert = Attendance.where(superior_mark2: current_user.name, superior_status2: 1)
     @att_change_alert_sum = @att_change_alert.count
   end 
   
@@ -86,6 +85,12 @@ class UsersController < ApplicationController
   end
   
   def update_overtime_message
+  end
+  
+  def attendance_log
+  end
+  
+  def attendance_log_search
   end
   
   private

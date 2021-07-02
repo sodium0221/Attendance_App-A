@@ -2,7 +2,7 @@ class AttendancesController < ApplicationController
   include AttendancesHelper
   
   before_action :set_user2, only: [:update_overtime_motion, :update_deano_motion, :edit_one_month_accept]
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :edit_deano_message, :confirm_one_month, :edit_one_month_accept]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :edit_deano_message, :confirm_one_month, :edit_one_month_accept, :update_one_month_accept]
   before_action :logged_in_user, only: [:update, :edit_one_month, :edit_one_month_accept]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :edit_one_month_accept]
   before_action :set_one_month, only: [:edit_one_month, :confirm_one_month, :update_overtime_motion, :edit_deano_motion, :update_deano_motion, :edit_one_month_accept]
@@ -63,6 +63,23 @@ class AttendancesController < ApplicationController
   end
   
   def update_one_month_accept
+    @user = User.find(params[:id])
+    
+    ActiveRecord::Base.transaction do
+      attendances_accept_params.each do |id, item|
+        @attendance = Attendance.find(id)
+        @attendance.update(item)
+        @attendance.save!(context: :one_month_accept_vali)
+        @attendance.started_aft = @attendance.started_temp
+        @attendance.finished_aft = @attendance.finished_temp
+        @attendance.update_attributes(started_temp: "", finished_temp: "", accept_day: Date.current)
+      end 
+    end 
+    flash[:success] = "勤怠変更申請の変更を送信しました。"
+    redirect_to @user
+  rescue ActiveRecord::RecordInvalid
+    flash[:danger] = @attendance.errors.full_messages.join("<br>")
+    redirect_to @user
   end
   
 
@@ -177,6 +194,10 @@ class AttendancesController < ApplicationController
   # 1ヶ月分の勤怠情報を扱います。
   def attendances_params
     params.require(:user).permit(attendances: [:started_temp, :finished_temp, :next_day1, :note, :superior_mark2])[:attendances]
+  end
+  
+  def attendances_accept_params
+    params.require(:user).permit(attendances: [:superior_status2, :chg2])[:attendances]
   end
   
   def overtime_params

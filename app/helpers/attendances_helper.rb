@@ -94,15 +94,31 @@ module AttendancesHelper
   end
   
   # 勤怠編集画面の時間表示調整
-  def show_time_field(time)
-    l(time, format: :time) if time.present?
+  def show_time_field(day)
+    l(day, format: :time) if day.present?
+  end
+  
+  # showページの出社時間表示調整
+  def show_started_time(day, f)
+    if day.started_aft.present?
+      l(day.started_aft, format: f)
+    elsif day.started_at.present?
+      l(day.started_at, format: f)
+    end
+  end
+  
+  # showページの退社時間表示調整
+  def show_finished_time(day, f)
+    if day.finished_aft.present?
+      l(day.finished_aft, format: f)
+    elsif day.finished_at.present?
+      l(day.finished_at, format: f)
+    end 
   end
   
   # 勤怠編集申請モーダルの時間表示調整
   def none_data_time_for_view(time, f)
-    if time.present?
-      l(time, format: f)
-    end
+    l(time, format: f) if time.present?
   end
   
   # 勤怠編集画面の条件分岐
@@ -115,4 +131,10 @@ module AttendancesHelper
       return false
     end 
   end
+  
+  # 勤怠ログ画面の時間表示
+  def time_of_view(day)
+    l(day, format: :time) if day.present?
+  end
+      
 end
