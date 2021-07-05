@@ -91,6 +91,9 @@ class UsersController < ApplicationController
   end
   
   def attendance_log_search
+    @user = User.find(params[:id])
+    @log_day = DateTime.new(params[:user]["worked_on(1i)"].to_i, params[:user]["worked_on(2i)"].to_i)
+    redirect_to attendance_log_user_path(date: @log_day)
   end
   
   private
