@@ -4,7 +4,9 @@ class UsersController < ApplicationController
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
   before_action :set_one_month, only: [:show, :attendance_log]
+  
   def index
+    @user = User.new
     @users = User.paginate(page: params[:page])
   end 
   
@@ -70,8 +72,22 @@ class UsersController < ApplicationController
   end
   
   def import
-    User.import(params[:file])
-    redirect_to root_url
+    if params[:file].blank?
+      redirect_to users_url
+      flash[:danger] = "読み込むCSVファイルを選択してください"
+    elsif File.extname(params[:file].original_filename) != ".csv"
+      redirect_to users_url
+      flash[:danger] = "CSVファイルのみ選択可能です"
+    else
+      @file = User.import(params[:file])
+      if @file == false
+        flash[:danger] = "インポートされたファイルに無効な値が入っています"
+        redirect_to users_url
+      else
+        flash[:success] = "ユーザーを登録しました"
+        redirect_to users_url
+      end
+    end
   end
   
   def attending_member

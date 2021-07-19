@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     get '/attending_member', to: 'users#attending_member'
     
     resources :users do
-      collection { post :csv_import }
+      collection { post :import }
       member do
         get 'edit_basic_info'
         patch 'update_basic_info'

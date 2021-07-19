@@ -1,17 +1,11 @@
 <% provide(:title, 'All Users') %>
 <h1>ユーザー一覧</h1>
+<%= render 'shared/error_messages', object: @user %>
 
 <div class="col-md-10 col-md-offset-1">
-  <%= form_with(url: csv_import_users_path, local: true) do |f| %>
-    <%= f.file_field :file, accept: 'csv' %>
-    <%= f.submit "CSVをインポート", class: "btn btn-primary import-button" %>
-    <% if @errors.present? %>
-      <% @errors.each do |error| %>
-        <% error[:messages].each do |message| %>
-          <li><%= "#{error[:row_num]}行目：#{message}" %></li>
-        <% end %>
-      <% end %>
-　  <% end %>
+  <%= form_tag import_users_path, multipart: true do %>
+    <%= file_field_tag :file %>
+    <%= submit_tag "インポート", class: "btn btn-primary" %>
   <% end %>
   <%= will_paginate %>
   

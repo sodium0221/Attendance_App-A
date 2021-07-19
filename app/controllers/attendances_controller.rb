@@ -72,7 +72,7 @@ class AttendancesController < ApplicationController
         @attendance.save!(context: :one_month_accept_vali)
         @attendance.started_aft = @attendance.started_temp
         @attendance.finished_aft = @attendance.finished_temp
-        @attendance.update_attributes(started_temp: "", finished_temp: "", accept_day: Date.current)
+        @attendance.update_attributes(accept_day: Date.current)
       end 
     end 
     flash[:success] = "勤怠変更申請の変更を送信しました。"
