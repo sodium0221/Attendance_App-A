@@ -39,6 +39,7 @@ Rails.application.routes.draw do
         patch 'attendances/update_one_month_accept'
         get 'attendance_log'
         patch 'attendance_log_search'
+        patch 'csv'
       end 
       resources :attendances, only: :update do
         member do

@@ -1,9 +1,10 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :attendance_log, :attendance_log]
-  before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
-  before_action :correct_user, only: [:edit, :update]
-  before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
-  before_action :set_one_month, only: [:show, :attendance_log]
+  before_action :set_user, only: [:csv, :show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :attendance_log]
+  before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :attendance_log]
+  before_action :correct_user, only: [:edit, :update, :show, :attendance_log]
+  before_action :admin_user, only: [:destroy, :index, :edit_basic_info, :update_basic_info]
+  before_action :set_one_month, only: [:csv, :show, :attendance_log]
+  before_action :non_admin_user, only: [:show]
   
   def index
     @user = User.new
@@ -23,6 +24,11 @@ class UsersController < ApplicationController
     @notice_superior_sum = @notice_superior.count
     @att_change_alert = Attendance.where(superior_mark2: current_user.name, superior_status2: 1)
     @att_change_alert_sum = @att_change_alert.count
+    
+    respond_to do |format|
+      format.html
+      format.csv { send_data User.to_csv, type: 'text/csv; charset=shift_jis', filename: "attendance.csv" }
+    end
   end 
   
   def new
@@ -80,7 +86,7 @@ class UsersController < ApplicationController
       flash[:danger] = "CSVファイルのみ選択可能です"
     else
       @file = User.import(params[:file])
-      if @file == false
+      if @file.present?
         flash[:danger] = "インポートされたファイルに無効な値が入っています"
         redirect_to users_url
       else

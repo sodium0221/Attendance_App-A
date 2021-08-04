@@ -1,3 +1,4 @@
+<% provide(:title, "#{@user.name}:確認") %>
 <div>
   <table class="table table-bordered table-condensed user-table">
     <tr>
@@ -58,13 +59,16 @@
         <tr>
           <td><%= l(day.worked_on, format: :short) %></td>
           <td class='<%= "wday#{day.worked_on.wday}"%>'><%= $days_of_the_week[day.worked_on.wday] %></td>
-          <td><%= l(day.started_at, format: :hour) if day.started_at.present? %></td>
-          <td><%= l(day.started_at, format: :min) if day.started_at.present? %></td>
-          <td><%= l(day.finished_at, format: :hour) if day.finished_at.present? %></td>
-          <td><%= l(day.finished_at, format: :min) if day.finished_at.present? %></td>
+          <td><%= show_started_time(day, :hour) %></td>
+          <td><%= show_started_time(day, :min) %></td>
+          <td><%= show_finished_time(day, :hour) %></td>
+          <td><%= show_finished_time(day, :min) %></td>
           <td>
-            <% if day.started_at.present? && day.finished_at.present? %>
-              <%= str_times = working_times(day.started_at, day.finished_at) %>
+            <% if day.started_aft.present? && day.finished_aft.present? %>
+              <%= str_times = working_times_aft(day) %>
+              <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
+            <% elsif day.started_at.present? && day.finished_at.present? %>
+              <%= str_times = working_times_at(day) %>
               <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
             <% end %>
           </td>
@@ -81,7 +85,7 @@
       <tr>
         <td colspan="2"></td>
         <td colspan="4">累計在社時間</td>
-        <td><%= format_basic_info(@user.work_time).to_f * @worked_sum %></td>
+        <td><%= format("%.2f", @total_working_times.to_f) %></td>
         <td colspan="5"></td>
         <td></td>
         

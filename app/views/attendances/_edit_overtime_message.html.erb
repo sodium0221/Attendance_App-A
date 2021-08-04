@@ -4,9 +4,6 @@
   <div class="modal-dialog modal-dialog-center-overtime">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
         <% @users.each do |user| %>
           <table class="table table-bordered table-condensed" id="edit-overtime-message-modal">
             <tbody>
@@ -31,7 +28,7 @@
                     <td><%= format_time(user.designated_work_end_time) %></td>
                     <td><%= format_time_delta(day, @user) %></td>
                     <td><%= day.operation %></td>
-                    <td><%= att.select :request_status, Attendance.request_statuses.keys.to_a, {}, class: "form-control" %></td>
+                    <td><%= att.select :request_status, Attendance.request_statuses.keys.to_a, {}, class: "form-control select#{day.id}" %></td>
                     <td><%= att.check_box :chg %></td>
                     <td><%= link_to "確認", attendances_confirm_one_month_user_path(user.id, date: day.worked_on.beginning_of_month), class: "btn btn-sm btn-primary" %></td>
                   </tr>
@@ -42,6 +39,7 @@
         <% end %>
         <div class="message-btn">
           <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+          <%= link_to "閉じる", current_user, class: "btn btn-lg btn-default" %>
         </div>
       </div>
     </div>

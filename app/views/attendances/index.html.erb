@@ -1,0 +1,8 @@
+<h1>Index</h1>
+<p><%= @user.name %></p>
+
+<% @attendances.each do |day| %>
+  <tr>
+    <td><%= day.worked_on %></td>
+  </tr>
+<% end %>

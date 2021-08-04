@@ -1,3 +1,4 @@
+require 'csv'
 class User < ApplicationRecord
   has_many :attendances, dependent: :destroy
   # 「remember_token」と言う仮装の属性を作成します。
@@ -19,16 +20,14 @@ class User < ApplicationRecord
   
   # importメソッド
   def self.import(file)
-    CSV.foreach(file.path, encoding: 'Shift_JIS:UTF-8', headers: true) do |row|
+    CSV.foreach(file.path, encoding: 'Windows-31J:UTF-8', headers: true) do |row|
       # idが見つかれば、レコードを呼び出し、見つからなければ、新しく作成
-      @user = find_by(id: row["id"]) || new
+      user = find_by(id: row["id"]) || new
       # CSVからデータを取得し、設定する
-      @user.attributes = row.to_hash.slice(*updatable_attributes)
-    end
-    if @user.valid?
-      @user.save!
-    else
-      return false
+      user.attributes = row.to_hash.slice(*updatable_attributes)
+      unless user.save
+        return user.errors.full_messages
+      end
     end
   end
   
@@ -37,6 +36,16 @@ class User < ApplicationRecord
     ["name", "email", "affiliation", "employee_number", "uid", "basic_time", 
      "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"]
   end
+  
+  def self.to_csv
+    headers = %w(日付 出社 退社)
+    csv_data = CSV.generate(headers: headers, write_headers: true) do |csv|
+      all.each do |row|
+        csv << row.attributes.values_at(*self.column_names)
+      end 
+    end 
+    csv_data.encode(Encoding::SJIS)
+  end 
   
   
   

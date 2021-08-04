@@ -2,10 +2,11 @@ class AttendancesController < ApplicationController
   include AttendancesHelper
   
   before_action :set_user2, only: [:update_overtime_motion, :update_deano_motion, :edit_one_month_accept]
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :edit_deano_message, :confirm_one_month, :edit_one_month_accept, :update_one_month_accept]
+  before_action :set_user, only: [:index, :edit_one_month, :update_one_month, :edit_overtime_message, :update_overtime_message, :edit_deano_message, :confirm_one_month, :edit_one_month_accept, :update_one_month_accept]
   before_action :logged_in_user, only: [:update, :edit_one_month, :edit_one_month_accept]
   before_action :admin_or_correct_user, only: [:update, :edit_one_month, :update_one_month, :edit_one_month_accept]
-  before_action :set_one_month, only: [:edit_one_month, :confirm_one_month, :update_overtime_motion, :edit_deano_motion, :update_deano_motion, :edit_one_month_accept]
+  before_action :set_one_month, only: [:index, :edit_one_month, :confirm_one_month, :update_overtime_motion, :edit_deano_motion, :update_deano_motion, :edit_one_month_accept]
+  before_action :non_admin_user, only: [:edit_one_month]
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
   
@@ -29,34 +30,54 @@ class AttendancesController < ApplicationController
     redirect_to @user
   end
   
+  def index
+    respond_to do |format|
+      format.html
+      format.csv { send_data render_to_string, filename: "(ファイル名).csv", type: :csv }
+    end
+  end
+  
+  
+
+    
   def edit_one_month
     @superiors = User.where(superior: true).where.not(name: current_user.name)
+    
+    respond_to do |format|
+      format.html
+      format.csv { send_data render_to_string, filename: "#{@first_day.strftime("%Y年%m月")}勤怠情報.csv", type: :csv }
+    end
   end
   
   def update_one_month
+    @count = 0
     ActiveRecord::Base.transaction do       
-      attendances_params.each do |id, item|         
-        if params[:user][:attendances][id][:superior_mark2].present?           
-          attendance = Attendance.find(id)           
-          attendance.update(item)
-          attendance.save!(context: :update_one_month_vali)           
-          attendance.update_attributes!(superior_status2: 1)
-        elsif params[:user][:attendances][id][:started_temp].present? ||
-              params[:user][:attendances][id][:finished_temp].present? ||
-              params[:user][:attendances][id][:note].present?
-              raise ActiveRecord::RecordInvalid
+      attendances_params.each do |id, item|
+        @attendance = Attendance.find(id)
+        unless params[:user][:attendances][id][:superior_mark2].blank? && @attendance.superior_status2 != "なし"
+          if params[:user][:attendances][id][:superior_mark2].present? 
+            @attendance.update(item)
+            @attendance.save!(context: :update_one_month_vali)
+            @attendance.update_attributes!(superior_status2: 1)
+            @count += 1
+          elsif params[:user][:attendances][id][:started_temp].present? ||
+                params[:user][:attendances][id][:finished_temp].present? ||
+                params[:user][:attendances][id][:note].present?
+            raise ActiveRecord::RecordInvalid
+          end
         end
       end      
     end      
-    flash[:success] = "勤怠変更を申請しました。"     
-    redirect_to user_url(date: params[:date])   
+    flash[:success] = "勤怠変更を#{@count}件申請しました。"     
+    redirect_to user_url(date: params[:date])
+    @count = 0
   rescue ActiveRecord::RecordInvalid     
     flash[:danger] = "無効な入力があるので送信できませんでした。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
   
   def edit_one_month_accept
-    @user_id = Attendance.where(superior_mark2: current_user.name).pluck(:user_id).uniq
+    @user_id = Attendance.where(superior_mark2: current_user.name, superior_status2: 1).pluck(:user_id).uniq
     @users = User.find(@user_id)
     @attendance = @user.attendances.where(worked_on: @first_day..@last_day)
     @superiors = User.where(superior: true).where.not(name: current_user.name)
@@ -64,18 +85,28 @@ class AttendancesController < ApplicationController
   
   def update_one_month_accept
     @user = User.find(params[:id])
+    @count = 0
     
     ActiveRecord::Base.transaction do
       attendances_accept_params.each do |id, item|
+        if params[:user][:attendances][id][:chg2] == "1"
         @attendance = Attendance.find(id)
-        @attendance.update(item)
-        @attendance.save!(context: :one_month_accept_vali)
-        @attendance.started_aft = @attendance.started_temp
-        @attendance.finished_aft = @attendance.finished_temp
-        @attendance.update_attributes(accept_day: Date.current)
+          if params[:user][:attendances][id][:superior_status2] == "否認"
+            @attendance.update_attributes(started_temp: nil, finished_temp: nil,note: nil, chg2: nil, next_day1: nil,
+                                          superior_status2: params[:user][:attendances][id][:superior_status2])
+            @count += 1
+          else
+            @attendance.update(item)
+            @attendance.save!(context: :one_month_accept_vali)
+            @attendance.update_attributes(accept_day: Date.current, chg2: nil,
+                                          started_aft: @attendance.started_temp,
+                                          finished_aft: @attendance.finished_temp)
+            @count += 1
+          end
+        end
       end 
     end 
-    flash[:success] = "勤怠変更申請の変更を送信しました。"
+    flash[:success] = "勤怠変更申請の変更を#{@count}件送信しました。"
     redirect_to @user
   rescue ActiveRecord::RecordInvalid
     flash[:danger] = @attendance.errors.full_messages.join("<br>")
@@ -123,15 +154,25 @@ class AttendancesController < ApplicationController
   
   def update_overtime_message
     @user = User.find(params[:id])
-    
+    @count = 0
     ActiveRecord::Base.transaction do
       edit_overtime_message_params.each do |id, item|
-        @attendance = Attendance.find(id)
-        @attendance.update(item)
-        @attendance.save!(context: :overtime_mess_vali)
+      @attendance = Attendance.find(id)
+        if params[:user][:attendances][id][:chg] == "1"
+          if params[:user][:attendances][id][:request_status] == "否認"
+            @attendance.update_attributes(finish_overtime: nil, next_day: nil, operation: nil, chg: nil,
+                                          request_status: params[:user][:attendances][id][:request_status])
+            @count += 1
+          else
+            @attendance.update(item)
+            @attendance.save!(context: :overtime_mess_vali)
+            @attendance.update_attributes(chg: nil)
+            @count += 1
+          end
+        end
       end 
     end 
-    flash[:success] = "残業申請の変更を送信しました。"
+    flash[:success] = "残業申請の変更#{@count}件送信しました。"
     redirect_to @user
   rescue ActiveRecord::RecordInvalid
     flash[:danger] = @attendance.errors.full_messages.join("<br>")
@@ -176,14 +217,19 @@ class AttendancesController < ApplicationController
   
   def update_deano_message
     @user = User.find(params[:id])
+    @count = 0
     ActiveRecord::Base.transaction do 
       deano_message_params.each do |id, item|
-        @attendance = Attendance.find(id)
-        @attendance.update(item)
-        @attendance.save!(context: :deano_mess_vali)
+      @attendance = Attendance.find(id)
+        if params[:user][:attendances][id][:chg1] == "1"
+          @attendance.update(item)
+          @attendance.save!(context: :deano_mess_vali)
+          @attendance.update_attributes(chg1: nil)
+          @count += 1
+        end
       end 
     end 
-    flash[:success] = "勤怠申請の変更を送信しました。"
+    flash[:success] = "勤怠申請の変更を#{@count}件送信しました。"
     redirect_to @user
   rescue ActiveRecord::RecordInvalid
     flash[:danger] = @attendance.errors.full_messages.join("<br>")

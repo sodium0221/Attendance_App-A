@@ -33,6 +33,11 @@ class ApplicationController < ActionController::Base
     def admin_user
       redirect_to root_url unless current_user.admin?
     end 
+    
+    # システム管理者権限所有の人出ない人を判断
+    def non_admin_user
+      redirect_to root_url if current_user.admin?
+    end
   
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   def set_one_month
@@ -58,5 +63,10 @@ class ApplicationController < ActionController::Base
   def set_user2
     @attendance = Attendance.find(params[:id])
     @user = User.find(@attendance.user_id)
+  end
+  
+  def create_csv_file_header(csv_file_name)
+    file_name = ERB::Util.url_encode(file_name) if (/MSIE/ =~ request.user_agent) || (/Trident/ =~ request.user_agent)
+    headers['Content-Disposition'] = "attachment; filename=\"#{file_name}.csv\""
   end
 end

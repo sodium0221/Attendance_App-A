@@ -12,11 +12,13 @@ class SitesController < ApplicationController
   end
   
   def create
+    @sites = Site.all
     @site = Site.new(site_params)
       if @site.save
         flash[:success] = "拠点情報を追加しました。"
         redirect_to sites_url
       else
+        flash[:danger] = @site.errors.full_messages.join("<br>")
         render :index
       end
   end
@@ -25,7 +27,7 @@ class SitesController < ApplicationController
     if @site.update_attributes(site_params)
       flash[:success] = "拠点情報を更新しました。"
     else
-      flash[:danger] = "更新は失敗しました。"
+      flash[:danger] = @site.errors.full_messages.join("<br>")
     end 
       redirect_to sites_url
   end
@@ -51,6 +53,7 @@ class SitesController < ApplicationController
   # beforeフィルター
   def set_site
     @site = Site.find(params[:id])
+    @sites = Site.all
   end
   
   private

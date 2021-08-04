@@ -4,9 +4,6 @@
   <div class="modal-dialog modal-dialog-center-overtime">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
         <% @users.each do |user| %>
           <table class="table table-bordered table-condensed" id="edit-overtime-message-modal">
             <tbody>
@@ -32,6 +29,7 @@
         <% end %>
         <div class="message-btn">
           <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+          <%= link_to "閉じる", current_user, class: "btn btn-lg btn-default" %>
         </div>
       </div>
     </div>

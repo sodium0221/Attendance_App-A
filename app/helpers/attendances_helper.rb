@@ -15,8 +15,16 @@ module AttendancesHelper
   end
   
   # 出勤時間と退勤時間を受け取り、在社時間を計算して返します。
-  def working_times(start, finish)
-    format("%.2f", (((finish - start) / 60) / 60.0))
+  def working_times_at(day)
+    format("%.2f", (((day.finished_at - day.started_at) / 60) / 60.0))
+  end
+  
+  def working_times_aft(day)
+    if day.next_day1 == 1
+      format("%.2f", ((((day.finished_aft + 1.day) - day.started_aft) / 60) / 60))
+    else
+      format("%.2f", (((day.finished_aft - day.started_aft) / 60) / 60.0))
+    end
   end
   
   # 日付を"worked_on"に変更する
@@ -128,6 +136,16 @@ module AttendancesHelper
     elsif item.finished_temp.present? && item.superior_mark2.nil?
       return false
     elsif item.note.present? && item.superior_mark2.nil?
+      return false
+    end 
+  end
+  
+  # 勤怠編集画面で既存のデータを弾く
+  def check_of_edition(mark2, status2)
+    if mark2.nil? && status2.present?
+      return false
+    elsif
+      mark2.nil? && status2.nil?
       return false
     end 
   end

@@ -4,9 +4,6 @@
   <div class="modal-dialog modal-dialog-center-overtime">
     <div class="modal-content">
       <div class="modal-body">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
         <% @users.each do |user| %>
           <table class="table table-bordered table-condensed" id="edit-one-month-accept-modal">
             <tbody>
@@ -17,7 +14,7 @@
                 <th colspan="4">変更前</th>
                 <th colspan="4">変更後</th>
                 <th rowspan="3">備考</th>
-                <th rowspan="3">指示者確認</th>
+                <th rowspan="3">指示者確認㊞</th>
                 <th rowspan="3">変更</th>
                 <th rowspan="3">勤怠を確認する</th>
               </tr>
@@ -62,6 +59,7 @@
         <% end %>
         <div class="message-btn">
           <%= f.submit "変更を送信する", class: "btn btn-lg btn-primary" %>
+          <%= link_to "閉じる", current_user, class: "btn btn-lg btn-default" %>
         </div>
       </div>
     </div>

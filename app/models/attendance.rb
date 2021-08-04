@@ -89,6 +89,10 @@ class Attendance < ApplicationRecord
   def next_day1_confirmation
     if started_temp.nil? && finished_temp.nil?
       errors.add(:started_temp, "を入力してください")
+    elsif started_temp.present? && finished_temp.nil?
+      errors.add(:finished_temp, "を入力してください")
+    elsif started_temp.nil? && finished_temp.present?
+      errors.add(:started_at, "を入力してください")
     elsif (finished_temp > started_temp) && next_day1 == 1
       errors.add(:next_day, "のチェックを外してください")
     elsif (finished_temp < started_temp) && next_day1 == 0
@@ -143,11 +147,21 @@ class Attendance < ApplicationRecord
   end
   
   def deano_message_request_status_check
-    errors.add(:superior_status1, "を承認か否認にしてください") if superior_status1 == 0 || superior_status1 == 1
+    errors.add(:superior_status1, "を承認か否認にしてください") if superior_status1 == "none" || superior_status1 == "pending"
   end
   
   def deano_message_chg_check
     errors.add(:chg1, "にチェックを入れてください") if chg1 == 0
   end
+  
+  def self.to_csv
+    headers = %(日付 出社 退社)
+    csv_data = CSV.generate(headers: headers, write_headers: true) do |csv|
+      all.each do |row|
+        csv << row.attributes.values_at(*self.column_names)
+      end 
+    end 
+    csv_data.encode(Encoding::SJIS)
+  end 
   
 end

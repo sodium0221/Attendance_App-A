@@ -29,7 +29,7 @@
               <% end %>
               <td><%= attendance.check_box :next_day1 %></td>
               <td><%= attendance.text_field :note, placeholder: "変更理由を記入してください", class: "form-control" %></td>
-              <td><%= attendance.collection_select :superior_mark2, @superiors, :name, :name, {prompt: "選択して下さい"}, class: "form-control" %>
+              <td><%= attendance.collection_select :superior_mark2, @superiors, :name, :name, {prompt: "選択してください", selected: ""}, class: "form-control" %>
             </tr>
           <% end %>
         <% end %>

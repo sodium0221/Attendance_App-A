@@ -17,6 +17,13 @@
   margin-top: 10px;
 }
 
+/* ユーザー情報下ボタン */
+
+.btn-users-show {
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
 /* ユーザー勤怠情報テーブル */
 
 .btn-att_app {
@@ -43,6 +50,7 @@
 }
 
 #table-attendances {
+  padding-top: 5%;
   th {
     vertical-align: middle;
     text-align: center;
