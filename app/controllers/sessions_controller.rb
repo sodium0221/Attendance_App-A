@@ -1,6 +1,8 @@
 class SessionsController < ApplicationController
+  before_action :reject_logged_in, only: :new
   
   def new
+    @condition = logged_in?
   end
   
   def create

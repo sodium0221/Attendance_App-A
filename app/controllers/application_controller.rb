@@ -38,6 +38,11 @@ class ApplicationController < ActionController::Base
     def non_admin_user
       redirect_to root_url if current_user.admin?
     end
+    
+    # ログイン済みユーザーにログイン画面を表示させない
+    def reject_logged_in
+      redirect_to root_url if current_user.present?
+    end
   
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   def set_one_month

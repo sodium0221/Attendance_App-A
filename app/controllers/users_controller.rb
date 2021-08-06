@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: [:csv, :show, :attendance_log]
   before_action :non_admin_user, only: [:show]
   
+  
   def index
     @user = User.new
     @users = User.paginate(page: params[:page])

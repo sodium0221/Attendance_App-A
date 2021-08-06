@@ -1,5 +1,7 @@
 require 'csv'
 class User < ApplicationRecord
+  attribute :designated_work_start_time, :datetime, default: "9:00"
+  attribute :designated_work_end_time,   :datetime, default: "18:00"
   has_many :attendances, dependent: :destroy
   # 「remember_token」と言う仮装の属性を作成します。
   attr_accessor :remember_token
