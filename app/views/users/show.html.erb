@@ -31,14 +31,14 @@
   <div>
     <%= link_to_if @att_notice.present?, "【所属長承認申請のお知らせ】", attendances_edit_deano_message_user_path(@user), remote: true, class: "message_alert" %>
     <% if @att_notice.present? %>
-      <font class="<%= "#{apply_message}"%>"><%= "#{@att_notice_sum}件の通知があります" %></font>
+      <font class="<%= "#{apply_message1}"%>"><%= "#{@att_notice_sum}件の通知があります" %></font>
     <% end %>
   </div> 
   
   <div>
     <%= link_to_if @att_change_alert.present?, "【勤怠変更申請のお知らせ】", attendances_edit_one_month_accept_user_path(@user), remote: true, class: "message_alert" %>
     <% if @att_change_alert.present? %>
-      <font class="<%= "#{apply_message}"%>"><%= "#{@att_change_alert_sum}件の通知があります" %></font>
+      <font class="<%= "#{apply_message2}"%>"><%= "#{@att_change_alert_sum}件の通知があります" %></font>
     <% end %>
   </div> 
   

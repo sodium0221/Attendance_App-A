@@ -95,6 +95,10 @@ class AttendancesController < ApplicationController
             @attendance.update_attributes(started_temp: nil, finished_temp: nil,note: nil, chg2: nil, next_day1: nil,
                                           superior_status2: params[:user][:attendances][id][:superior_status2])
             @count += 1
+          elsif params[:user][:attendances][id][:superior_status2] == "なし"
+            @attendance.update_attributes(started_temp: nil, finished_temp: nil,note: nil, chg2: nil, next_day1: nil,
+                                          superior_status2: "なし")
+            @count += 1
           else
             @attendance.update(item)
             @attendance.save!(context: :one_month_accept_vali)
@@ -164,8 +168,11 @@ class AttendancesController < ApplicationController
       @attendance = Attendance.find(id)
         if params[:user][:attendances][id][:chg] == "1"
           if params[:user][:attendances][id][:request_status] == "否認"
+            @attendance.update_attributes(chg: nil, request_status: params[:user][:attendances][id][:request_status])
+            @count += 1
+          elsif params[:user][:attendances][id][:request_status] == "なし"
             @attendance.update_attributes(finish_overtime: nil, next_day: nil, operation: nil, chg: nil,
-                                          request_status: params[:user][:attendances][id][:request_status])
+                                          request_status: "なし")
             @count += 1
           else
             @attendance.update(item)
@@ -226,10 +233,15 @@ class AttendancesController < ApplicationController
       deano_message_params.each do |id, item|
       @attendance = Attendance.find(id)
         if params[:user][:attendances][id][:chg1] == "1"
-          @attendance.update(item)
-          @attendance.save!(context: :deano_mess_vali)
-          @attendance.update_attributes(chg1: nil)
-          @count += 1
+          if params[:user][:attendances][id][:superior_status1] == "none"
+            @attendance.update_attributes(superior_mark1: nil, superior_status1: "none", chg1: nil)
+            @count += 1
+          else
+            @attendance.update(item)
+            @attendance.save!(context: :deano_mess_vali)
+            @attendance.update_attributes(chg1: nil)
+            @count += 1
+          end
         end
       end 
     end 

@@ -147,7 +147,7 @@ class Attendance < ApplicationRecord
   end
   
   def deano_message_request_status_check
-    errors.add(:superior_status1, "を承認か否認にしてください") if superior_status1 == "none" || superior_status1 == "pending"
+    errors.add(:superior_status1, "を承認か否認にしてください") if superior_status1 == "pending"
   end
   
   def deano_message_chg_check

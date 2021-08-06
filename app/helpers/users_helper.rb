@@ -6,9 +6,15 @@ module UsersHelper
   end
   
   def apply_message
-    if Attendance.where(superior_marking: current_user.name).present?
-      return "have_messages"
-    end
+    return "have_messages" if Attendance.where(superior_marking: current_user.name).present?
+  end
+
+  def apply_message1
+    return "have_messages" if Attendance.where(superior_mark1: current_user.name).present?
+  end
+
+  def apply_message2
+    return "have_messages" if Attendance.where(superior_mark2: current_user.name).present?
   end
 
   def format_time(time)
