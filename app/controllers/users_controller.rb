@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:csv, :show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :attendance_log]
   before_action :logged_in_user, only: [:index, :edit, :update, :destroy, :edit_basic_info, :update_basic_info, :attendance_log]
   before_action :correct_user, only: [:edit, :update, :show, :attendance_log]
-  before_action :admin_user, only: [:destroy, :index, :edit_basic_info, :update_basic_info]
+  before_action :admin_user, only: [:destroy, :index, :attending_member, :edit_basic_info, :update_basic_info]
   before_action :set_one_month, only: [:csv, :show, :attendance_log]
   before_action :non_admin_user, only: [:show]
   

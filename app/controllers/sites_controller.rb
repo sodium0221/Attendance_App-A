@@ -1,5 +1,6 @@
 class SitesController < ApplicationController
   before_action :set_site, only: [:show, :edit, :update, :destroy, :edit_site_info, :update_site_info]
+  before_action :admin_user, only: [:index]
   def new
     @site = Site.new
   end

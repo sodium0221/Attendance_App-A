@@ -132,11 +132,15 @@ class AttendancesController < ApplicationController
                                                                  month: @attendance.worked_on.month,
                                                                  day: @attendance.worked_on.day)
     ActiveRecord::Base.transaction do
-      @attendance.update(overtime_params)
-      @attendance.update_attributes(finish_overtime: @attendance.finish_overtime.change(year: @attendance.worked_on.year, 
-                                                                                        month: @attendance.worked_on.month, 
-                                                                                        day: @attendance.worked_on.day))
-      @attendance.save!(context: :overtime_vali)
+      if params[:attendance][:finish_overtime].present?
+        @attendance.update(overtime_params)
+        @attendance.update_attributes(finish_overtime: @attendance.finish_overtime.change(year: @attendance.worked_on.year, 
+                                                                                          month: @attendance.worked_on.month, 
+                                                                                          day: @attendance.worked_on.day))
+        @attendance.save!(context: :overtime_vali)
+      else
+        raise ActiveRecord::RecordInvalid
+      end
     end
     @attendance.update_attributes(request_status: 1)
     flash[:success] = "#{l(@attendance.worked_on, format: :short)}の残業を申請しました"
