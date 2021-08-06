@@ -86,13 +86,8 @@ class UsersController < ApplicationController
       flash[:danger] = "CSVファイルのみ選択可能です"
     else
       @file = User.import(params[:file])
-      if @file.present?
-        flash[:danger] = "インポートされたファイルに無効な値が入っています"
-        redirect_to users_url
-      else
-        flash[:success] = "ユーザーを登録しました"
-        redirect_to users_url
-      end
+      flash[:success] = "ユーザーを#{@file}件登録しました"
+      redirect_to users_url
     end
   end
   

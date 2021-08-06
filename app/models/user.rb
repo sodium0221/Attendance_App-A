@@ -20,15 +20,18 @@ class User < ApplicationRecord
   
   # importメソッド
   def self.import(file)
+    @count = 0
     CSV.foreach(file.path, encoding: 'Windows-31J:UTF-8', headers: true) do |row|
       # idが見つかれば、レコードを呼び出し、見つからなければ、新しく作成
-      user = find_by(id: row["id"]) || new
+      @file = find_by(id: row["id"]) || new
       # CSVからデータを取得し、設定する
-      user.attributes = row.to_hash.slice(*updatable_attributes)
-      unless user.save
-        return user.errors.full_messages
+      @file.attributes = row.to_hash.slice(*updatable_attributes) 
+      if @file.valid?
+        @file.save
+        @count += 1
       end
     end
+    return @count
   end
   
   # 更新を許可するカラムを定義
