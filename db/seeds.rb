@@ -30,7 +30,7 @@ User.create!(name: "管理者",
 end
              
 10.times do |n|
-  name = Faker::Name.name
+  name = Gimei.name.kanji
   email = "sample-#{n+1}@email.com"
   password = "password"
   User.create!(name: name,
