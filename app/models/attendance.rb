@@ -101,7 +101,7 @@ class Attendance < ApplicationRecord
   end
   
   def one_month_accept_status_check
-    errors.add(:superior_status2, "を承認か否認にしてください") if superior_status2 == "なし" || superior_status2 == "申請中"
+    errors.add(:superior_status2, "を承認か否認にしてください") if superior_status2 == "申請中"
   end
   
   def one_month_accept_chg_check
@@ -125,7 +125,7 @@ class Attendance < ApplicationRecord
   end
   
   def overtime_message_request_status_check
-    errors.add(:request_status, "を承認か否認にしてください") if request_status == "なし" || request_status == "申請中"
+    errors.add(:request_status, "を承認か否認にしてください") if request_status == "申請中"
   end
   
   def overtime_message_chg_check
