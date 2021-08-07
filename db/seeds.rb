@@ -29,7 +29,7 @@ User.create!(name: "管理者",
                superior: true)
 end
              
-60.times do |n|
+10.times do |n|
   name = Faker::Name.name
   email = "sample-#{n+1}@email.com"
   password = "password"
